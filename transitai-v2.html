@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TransitAI — De transitie naar AI voor uw bedrijf</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafaf8;
+  --white: #ffffff;
+  --ink: #1c1c1e;
+  --ink2: #3a3a3c;
+  --muted: #8e8e93;
+  --border: #e5e5e5;
+  --border2: #d4d4d4;
+  --accent: #1a56db;
+  --accent-light: #eff6ff;
+  --accent-hover: #1648c0;
+  --gold: #b45309;
+  --gold-bg: #fffbeb;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --warn: #d97706;
+  --warn-bg: #fffbeb;
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+h1,h2,h3,h4 {
+  font-family: 'Instrument Serif', serif;
+  line-height: 1.15;
+  font-weight: 400;
+}
+
+a { text-decoration: none; }
+button { cursor: pointer; font-family: 'Outfit', sans-serif; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 32px;
+}
+.nav-inner {
+  max-width: 1160px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px; color: var(--ink);
+  cursor: pointer; letter-spacing: -0.3px;
+}
+.nav-logo em { font-style: italic; color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+  font-size: 14px; font-weight: 400; color: var(--ink2);
+  padding: 8px 14px; border-radius: 8px; border: none;
+  background: transparent; transition: all 0.15s; cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+.nav-link:hover { background: rgba(0,0,0,0.05); color: var(--ink); }
+.nav-link.active { color: var(--accent); background: var(--accent-light); }
+.nav-cta {
+  background: var(--accent); color: #fff;
+  padding: 9px 20px; border-radius: 8px; border: none;
+  font-size: 14px; font-weight: 500;
+  transition: background 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.nav-cta:hover { background: var(--accent-hover); }
+.nav-burger { display:none; background:none; border:none; font-size:20px; padding:8px; }
+
+/* Mobile nav */
+#mobile-nav {
+  display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: var(--white); z-index: 199; padding: 24px;
+  flex-direction: column; gap: 8px; border-top: 1px solid var(--border);
+}
+#mobile-nav button {
+  text-align: left; padding: 16px; font-size: 18px;
+  font-family: 'Outfit', sans-serif; background: none; border: none;
+  color: var(--ink); border-radius: 8px;
+}
+#mobile-nav button:hover { background: var(--bg); }
+
+/* ── PAGES ── */
+.page { display: none; padding-top: 64px; }
+.page.active { display: block; }
+
+/* ── UTILS ── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+.section { padding: 88px 0; }
+.section-sm { padding: 56px 0; }
+.label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 16px;
+}
+.label::before { content: ''; width: 16px; height: 2px; background: var(--accent); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 500;
+}
+.chip-blue { background: var(--accent-light); color: var(--accent); }
+.chip-amber { background: var(--warn-bg); color: var(--warn); }
+.chip-red { background: var(--danger-bg); color: var(--danger); }
+.chip-green { background: var(--success-bg); color: var(--success); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 10px; font-size: 15px;
+  font-weight: 500; border: none; transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,219,0.3); }
+.btn-secondary { background: var(--white); color: var(--ink); border: 1.5px solid var(--border2); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-ghost { background: transparent; color: var(--accent); padding: 12px 0; }
+.btn-ghost:hover { gap: 12px; }
+.btn-lg { padding: 15px 32px; font-size: 16px; }
+.btn-sm { padding: 8px 16px; font-size: 13px; }
+
+/* ── ALERT BANNER ── */
+.alert-banner {
+  background: #7f1d1d;
+  padding: 14px 32px;
+  text-align: center;
+}
+.alert-banner-inner {
+  max-width: 1160px; margin: 0 auto;
+  font-size: 14px; color: #fecaca; font-weight: 400;
+  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+}
+.alert-banner strong { color: #fff; font-weight: 600; }
+
+/* ── HOME HERO ── */
+.hero {
+  padding: 80px 0 72px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+}
+.hero-inner {
+  max-width: 1160px; margin: 0 auto; padding: 0 32px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.hero-left {}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-light); color: var(--accent);
+  font-size: 13px; font-weight: 500; padding: 6px 14px;
+  border-radius: 100px; margin-bottom: 24px;
+}
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 2s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.hero h1 {
+  font-size: clamp(40px, 4.5vw, 60px);
+  letter-spacing: -1px; margin-bottom: 24px; color: var(--ink);
+  line-height: 1.1;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  font-size: 17px; color: var(--ink2); line-height: 1.75;
+  margin-bottom: 36px; font-weight: 300;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-trust {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  padding-top: 32px; border-top: 1px solid var(--border);
+}
+.hero-trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--muted);
+}
+.hero-trust-item strong { color: var(--ink2); font-weight: 500; }
+
+/* Hero right — mini scan teaser card */
+.hero-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
+}
+.hero-card-title {
+  font-family: 'Instrument Serif', serif; font-size: 20px;
+  margin-bottom: 8px; color: var(--ink);
+}
+.hero-card-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+.penalty-box {
+  background: var(--danger-bg); border: 1px solid #fecaca;
+  border-radius: 10px; padding: 20px;
+  margin-bottom: 20px;
+}
+.penalty-box-title { font-size: 13px; font-weight: 600; color: var(--danger); margin-bottom: 12px; }
+.penalty-item { font-size: 14px; color: #991b1b; margin-bottom: 6px; display: flex; gap: 8px; }
+.penalty-item::before { content: '→'; color: var(--danger); flex-shrink: 0; }
+.risk-bars { margin-bottom: 20px; }
+.risk-bar-row { margin-bottom: 10px; }
+.risk-bar-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.risk-bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.risk-bar-fill { height: 100%; border-radius: 3px; }
+.fill-r { background: #ef4444; }
+.fill-a { background: #f59e0b; }
+.fill-g { background: #10b981; }
+
+/* ── WHO SECTION ── */
+.who-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 48px; }
+.who-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 32px 28px;
+  transition: all 0.2s; position: relative;
+}
+.who-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.who-icon-wrap {
+  width: 52px; height: 52px; background: var(--accent-light);
+  border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 24px; margin-bottom: 20px;
+}
+.who-card h3 { font-size: 22px; margin-bottom: 10px; }
+.who-card p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+.who-fine {
+  background: var(--danger-bg); border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: var(--danger); font-weight: 500;
+}
+
+/* ── FEATURE SECTION ── */
+.feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.feature-img {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; box-shadow: var(--shadow-md);
+}
+.feature-list { display: flex; flex-direction: column; gap: 20px; margin-top: 32px; }
+.feature-item { display: flex; gap: 16px; align-items: flex-start; }
+.feature-dot {
+  width: 32px; height: 32px; background: var(--accent-light);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+.feature-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; font-family: 'Outfit', sans-serif; }
+.feature-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── SERVICES SECTION ── */
+.services-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 48px; }
+.service-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 32px 28px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column;
+}
+.service-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+.service-card.featured { border-color: var(--accent); background: var(--accent-light); }
+.service-icon {
+  width: 48px; height: 48px; background: var(--bg);
+  border-radius: 12px; display: flex; align-items: center;
+  justify-content: center; font-size: 22px; margin-bottom: 20px;
+}
+.service-card.featured .service-icon { background: rgba(26,86,219,0.12); }
+.service-card h3 { font-size: 20px; margin-bottom: 8px; }
+.service-card p { font-size: 14px; color: var(--muted); line-height: 1.7; flex: 1; margin-bottom: 20px; }
+.service-link { font-size: 14px; font-weight: 500; color: var(--accent); display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
+.service-card:hover .service-link { gap: 8px; }
+.service-featured-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--accent);
+  margin-bottom: 12px;
+}
+
+/* ── STATS SECTION ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.stat-cell { background: var(--white); padding: 40px 32px; }
+.stat-num {
+  font-family: 'Instrument Serif', serif; font-size: 48px;
+  color: var(--accent); line-height: 1; margin-bottom: 8px; letter-spacing: -1px;
+}
+.stat-label { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+/* ── FAQ ── */
+.faq-list { max-width: 760px; margin: 48px auto 0; display: flex; flex-direction: column; gap: 4px; }
+.faq-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.faq-q {
+  width: 100%; text-align: left; padding: 22px 24px;
+  background: none; border: none; display: flex; justify-content: space-between; align-items: center;
+  font-size: 16px; font-weight: 500; color: var(--ink); cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+.faq-q:hover { background: var(--bg); }
+.faq-icon { font-size: 20px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; width: 24px; text-align: center; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  font-size: 15px; color: var(--ink2); line-height: 1.75;
+  padding: 0 24px;
+}
+.faq-item.open .faq-a { max-height: 400px; padding: 0 24px 22px; }
+.faq-a strong { color: var(--ink); font-weight: 500; }
+.faq-a ul { padding-left: 20px; margin-top: 8px; }
+.faq-a li { margin-bottom: 4px; }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: var(--accent); padding: 64px 32px; text-align: center;
+}
+.cta-banner h2 {
+  font-size: clamp(28px, 3.5vw, 44px); color: #fff;
+  letter-spacing: -0.5px; margin-bottom: 16px;
+}
+.cta-banner h2 em { font-style: italic; opacity: 0.8; }
+.cta-banner p { color: rgba(255,255,255,0.75); font-size: 16px; margin-bottom: 32px; max-width: 540px; margin-left: auto; margin-right: auto; }
+.cta-banner-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-white { background: #fff; color: var(--accent); }
+.btn-white:hover { background: rgba(255,255,255,0.9); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.btn-outline-white { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
+.btn-outline-white:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.7); }
+
+/* ── QUIZ MODULE ── */
+.quiz-page-hero {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 56px 32px 0; text-align: center;
+}
+.quiz-page-hero h1 {
+  font-size: clamp(32px, 4vw, 52px);
+  letter-spacing: -0.8px; margin-bottom: 16px;
+}
+.quiz-page-hero h1 em { font-style: italic; color: var(--accent); }
+.quiz-page-hero p { font-size: 17px; color: var(--ink2); max-width: 580px; margin: 0 auto 20px; font-weight: 300; line-height: 1.7; }
+.quiz-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 0; padding-bottom: 0; }
+.quiz-penalty-teaser {
+  display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+  margin: 20px 0 0; padding: 20px 32px;
+  background: var(--danger-bg); border-top: 1px solid #fecaca;
+  font-size: 14px; color: #991b1b; font-weight: 400;
+}
+.quiz-penalty-teaser strong { color: var(--danger); font-weight: 600; }
+
+/* Quiz card */
+.quiz-card-wrap {
+  max-width: 740px; margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.quiz-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: var(--shadow-lg); margin-top: 40px;
+}
+
+/* lang bar */
+.quiz-lang-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; gap: 8px;
+}
+.quiz-lang-bar-label { font-size: 13px; color: var(--muted); }
+.lang-toggle { display: flex; gap: 6px; }
+.lang-btn {
+  font-size: 13px; padding: 5px 14px; border-radius: 100px;
+  border: 1.5px solid var(--border); background: transparent;
+  color: var(--muted); cursor: pointer; font-family: 'Outfit', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* progress */
+.quiz-progress-track { height: 4px; background: var(--border); }
+.quiz-progress-bar { height: 100%; background: var(--accent); transition: width 0.5s ease; width: 0%; }
+.quiz-header { padding: 20px 28px 0; display: flex; justify-content: space-between; align-items: center; }
+.quiz-step-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; }
+.quiz-step-count { font-size: 14px; font-weight: 600; color: var(--accent); }
+
+/* Start */
+#quiz-start-panel { padding: 48px 28px; text-align: center; }
+#quiz-start-panel h3 { font-size: 26px; margin-bottom: 12px; }
+#quiz-start-panel p { font-size: 15px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; max-width: 440px; margin-left: auto; margin-right: auto; }
+.quiz-start-meta { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-top: 16px; }
+.quiz-start-meta span::before { content: '✓ '; color: var(--success); font-weight: 600; }
+
+/* Question */
+#quiz-body { display: none; }
+.quiz-question-area { padding: 24px 28px 8px; }
+.quiz-cat-label { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.quiz-q-text { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
+.quiz-q-hint { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+
+/* Info box inside hint */
+.quiz-info-box {
+  background: var(--accent-light); border: 1px solid #bfdbfe;
+  border-radius: 10px; padding: 16px 18px; margin-top: 12px;
+  font-size: 13px; color: var(--ink2); line-height: 1.65;
+}
+.quiz-info-box strong { color: var(--accent); font-weight: 600; display: block; margin-bottom: 6px; }
+.quiz-info-box ul { padding-left: 16px; margin-top: 4px; }
+.quiz-info-box li { margin-bottom: 3px; }
+
+/* Options */
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; padding: 0 28px; }
+.quiz-opt {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px; border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; transition: all 0.15s;
+  background: var(--bg); text-align: left; width: 100%;
+  font-family: 'Outfit', sans-serif;
+}
+.quiz-opt:hover { border-color: var(--accent); background: var(--white); }
+.quiz-opt.selected { border-color: var(--accent); background: var(--accent-light); }
+.quiz-opt-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border2); flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+}
+.quiz-opt.selected .quiz-opt-radio { border-color: var(--accent); background: var(--accent); }
+.quiz-opt.selected .quiz-opt-radio::after { content: ''; width: 7px; height: 7px; background: #fff; border-radius: 50%; }
+.quiz-opt-body { flex: 1; }
+.quiz-opt-label { font-size: 15px; font-weight: 400; color: var(--ink); }
+.quiz-opt-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* Nav */
+.quiz-nav { display: flex; gap: 10px; padding: 20px 28px 28px; }
+.quiz-nav-back {
+  padding: 12px 20px; border: 1.5px solid var(--border); border-radius: 10px;
+  background: transparent; color: var(--muted); font-size: 14px; font-weight: 500;
+  transition: all 0.15s; font-family: 'Outfit', sans-serif;
+}
+.quiz-nav-back:hover { border-color: var(--ink2); color: var(--ink); }
+.quiz-nav-next {
+  flex: 1; padding: 13px; border-radius: 10px;
+  background: var(--accent); color: #fff; border: none;
+  font-size: 15px; font-weight: 500; transition: all 0.15s;
+  font-family: 'Outfit', sans-serif;
+}
+.quiz-nav-next:hover:not(:disabled) { background: var(--accent-hover); }
+.quiz-nav-next:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── RESULTS ── */
+#quiz-results { display: none; }
+.results-wrap { max-width: 740px; margin: 0 auto; padding: 40px 24px 80px; }
+.results-score-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin-bottom: 20px;
+  box-shadow: var(--shadow-lg);
+}
+.results-score-top {
+  padding: 40px; text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.results-score-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 20px; }
+.score-gauge { position: relative; width: 180px; height: 90px; margin: 0 auto 16px; }
+.score-gauge svg { width: 100%; height: 100%; }
+.gauge-bg-arc { fill: none; stroke: var(--border); stroke-width: 10; }
+.gauge-fill-arc { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1); }
+.score-display { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); text-align: center; }
+.score-big { font-family: 'Instrument Serif', serif; font-size: 52px; line-height: 1; letter-spacing: -2px; }
+.score-of { font-size: 14px; color: var(--muted); }
+.results-verdict { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 100px; font-size: 14px; font-weight: 600; margin-top: 16px; }
+.verdict-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid #fcd34d; }
+.verdict-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fca5a5; }
+.results-score-bottom { padding: 28px 40px; background: var(--bg); }
+.results-alert { font-size: 15px; color: var(--ink2); line-height: 1.75; }
+.results-alert strong { color: var(--ink); font-weight: 600; }
+
+.results-section { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 16px; }
+.results-section-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; font-family: 'Outfit', sans-serif; }
+.breakdown-rows { display: flex; flex-direction: column; gap: 10px; }
+.br-row { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--bg); border-radius: 10px; }
+.br-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; border: 1px solid var(--border); }
+.br-info { flex: 1; }
+.br-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.br-desc { font-size: 12px; color: var(--muted); }
+.br-score { font-family: 'Instrument Serif', serif; font-size: 26px; flex-shrink: 0; }
+.br-r { color: var(--danger); }
+.br-a { color: var(--warn); }
+.br-g { color: var(--success); }
+
+.steps-list { display: flex; flex-direction: column; gap: 16px; }
+.step-row { display: flex; gap: 16px; }
+.step-n { font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--accent); opacity: 0.3; line-height: 1; flex-shrink: 0; width: 36px; }
+.step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; font-family: 'Outfit', sans-serif; }
+.step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+.results-cta-card {
+  background: var(--accent); border-radius: 16px; padding: 40px; text-align: center;
+  margin-bottom: 16px;
+}
+.results-cta-card h3 { font-size: 28px; color: #fff; margin-bottom: 12px; }
+.results-cta-card p { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 28px; line-height: 1.65; max-width: 460px; margin-left: auto; margin-right: auto; }
+.results-cta-card .btn-white { font-size: 16px; padding: 15px 36px; }
+.results-restart { margin-top: 16px; background: none; border: none; color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: underline; cursor: pointer; font-family: 'Outfit', sans-serif; }
+.results-restart:hover { color: rgba(255,255,255,0.8); }
+
+/* ── DIENSTEN ── */
+.dienst-hero {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 64px 32px 56px;
+}
+.dienst-hero-inner { max-width: 1160px; margin: 0 auto; }
+.dienst-hero h1 { font-size: clamp(36px,4.5vw,56px); letter-spacing: -1px; margin-bottom: 16px; }
+.dienst-hero h1 em { font-style: italic; color: var(--accent); }
+.dienst-hero p { font-size: 17px; color: var(--ink2); max-width: 560px; font-weight: 300; line-height: 1.7; }
+
+.diensten-list { max-width: 1160px; margin: 0 auto; padding: 64px 32px; display: flex; flex-direction: column; gap: 24px; }
+.dienst-item {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.dienst-item:hover { box-shadow: var(--shadow-md); }
+.dienst-item.featured { border-color: var(--accent); }
+.dienst-item-header {
+  padding: 32px 36px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+}
+.dienst-item-header-left { display: flex; gap: 20px; align-items: flex-start; }
+.dienst-item-icon {
+  width: 56px; height: 56px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;
+}
+.dienst-item.featured .dienst-item-icon { background: var(--accent-light); border-color: #bfdbfe; }
+.dienst-item-title { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 6px; }
+.dienst-item-type { font-size: 13px; color: var(--muted); font-weight: 400; }
+.dienst-featured-badge {
+  background: var(--accent-light); color: var(--accent);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px; flex-shrink: 0; align-self: flex-start;
+}
+.dienst-body { padding: 28px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.dienst-desc p { font-size: 15px; color: var(--ink2); line-height: 1.8; margin-bottom: 14px; }
+.dienst-features { }
+.dienst-features-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
+.dienst-feature { display: flex; gap: 10px; font-size: 14px; color: var(--ink2); margin-bottom: 10px; line-height: 1.5; }
+.dienst-feature::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+.dienst-footer {
+  padding: 20px 36px; border-top: 1px solid var(--border);
+  background: var(--bg); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.dienst-price-note { font-size: 14px; color: var(--muted); }
+.dienst-price-note strong { color: var(--ink2); font-weight: 500; }
+
+/* ── OVER ONS ── */
+.over-hero {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 64px 32px;
+}
+.over-hero-inner { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.over-hero h1 { font-size: clamp(36px,4vw,52px); letter-spacing: -1px; margin-bottom: 20px; }
+.over-hero h1 em { font-style: italic; color: var(--accent); }
+.over-hero p { font-size: 16px; color: var(--ink2); line-height: 1.8; font-weight: 300; margin-bottom: 16px; }
+.over-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.over-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; }
+.over-stat-num { font-family: 'Instrument Serif', serif; font-size: 36px; color: var(--accent); margin-bottom: 6px; letter-spacing: -1px; }
+.over-stat-label { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.over-body { max-width: 1160px; margin: 0 auto; padding: 64px 32px; }
+.over-section { margin-bottom: 56px; }
+.over-section h2 { font-size: 32px; letter-spacing: -0.5px; margin-bottom: 20px; }
+.over-section p { font-size: 15px; color: var(--ink2); line-height: 1.8; margin-bottom: 14px; }
+.team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 32px; }
+.team-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; }
+.team-av { width: 52px; height: 52px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--accent); margin-bottom: 16px; }
+.team-name { font-size: 17px; font-weight: 600; margin-bottom: 4px; font-family: 'Outfit', sans-serif; }
+.team-role { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+.team-bio { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.values-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 32px; }
+.value-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; }
+.value-card h4 { font-size: 17px; margin-bottom: 10px; font-family: 'Outfit', sans-serif; font-weight: 600; }
+.value-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* ── CONTACT ── */
+.contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; min-height: calc(100vh - 64px); }
+.contact-left { background: var(--ink); padding: 64px 48px; display: flex; flex-direction: column; justify-content: center; }
+.contact-left h1 { font-size: clamp(32px,3.5vw,44px); color: #fff; letter-spacing: -0.8px; margin-bottom: 16px; }
+.contact-left h1 em { font-style: italic; color: #93c5fd; }
+.contact-left p { color: rgba(255,255,255,0.55); font-size: 15px; line-height: 1.8; margin-bottom: 40px; font-weight: 300; }
+.contact-info { display: flex; flex-direction: column; gap: 18px; margin-bottom: 48px; }
+.ci { display: flex; gap: 14px; align-items: flex-start; }
+.ci-icon { font-size: 16px; margin-top: 2px; flex-shrink: 0; }
+.ci-text { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+.ci-text strong { color: #fff; font-weight: 500; display: block; margin-bottom: 2px; }
+.contact-kvk-note { font-size: 12px; color: rgba(255,255,255,0.25); line-height: 1.7; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto; }
+
+/* Free consult box on left */
+.free-consult-box {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 24px; margin-bottom: 32px;
+}
+.free-consult-box h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
+.free-consult-box p { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 16px; line-height: 1.6; }
+.btn-consult {
+  background: #fff; color: var(--accent); border: none;
+  padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: 'Outfit', sans-serif; width: 100%;
+  transition: all 0.15s;
+}
+.btn-consult:hover { background: rgba(255,255,255,0.9); }
+
+.contact-right { background: var(--bg); padding: 64px 48px; display: flex; flex-direction: column; justify-content: center; }
+.contact-right h2 { font-size: 28px; letter-spacing: -0.3px; margin-bottom: 6px; }
+.contact-right .form-sub { font-size: 15px; color: var(--muted); margin-bottom: 36px; }
+
+/* Form */
+.form-group { margin-bottom: 18px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 8px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  background: var(--white); font-family: 'Outfit', sans-serif;
+  font-size: 15px; font-weight: 300; color: var(--ink);
+  transition: border-color 0.15s; outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,86,219,0.08); }
+.form-textarea { resize: vertical; min-height: 110px; }
+.form-submit {
+  width: 100%; padding: 14px; background: var(--accent); color: #fff;
+  border: none; border-radius: 10px; font-family: 'Outfit', sans-serif;
+  font-size: 16px; font-weight: 500; cursor: pointer; transition: background 0.15s;
+}
+.form-submit:hover { background: var(--accent-hover); }
+.form-disclaimer { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+.form-disclaimer a { color: var(--accent); }
+.form-success-msg {
+  background: var(--success-bg); border: 1px solid #a7f3d0;
+  color: #065f46; padding: 18px 22px; border-radius: 10px;
+  font-size: 15px; margin-top: 16px; display: none;
+}
+
+/* ── OFFERTE PAGE ── */
+.offerte-page { background: var(--bg); min-height: calc(100vh - 64px); padding: 64px 32px; }
+.offerte-inner { max-width: 640px; margin: 0 auto; }
+.offerte-inner h1 { font-size: 40px; letter-spacing: -0.8px; margin-bottom: 8px; }
+.offerte-inner .offerte-sub { font-size: 16px; color: var(--muted); margin-bottom: 40px; line-height: 1.7; }
+.offerte-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 40px; box-shadow: var(--shadow-md); }
+
+/* ── LEGAL ── */
+.legal-page { max-width: 760px; margin: 0 auto; padding: 64px 32px; }
+.legal-page h1 { font-size: 40px; letter-spacing: -0.8px; margin-bottom: 6px; }
+.legal-date { font-size: 13px; color: var(--muted); margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.legal-page h2 { font-size: 22px; margin-top: 40px; margin-bottom: 12px; }
+.legal-page h3 { font-size: 16px; margin-top: 24px; margin-bottom: 8px; font-weight: 600; font-family: 'Outfit', sans-serif; }
+.legal-page p, .legal-page li { font-size: 15px; color: var(--ink2); line-height: 1.8; margin-bottom: 10px; }
+.legal-page ul { padding-left: 20px; margin-bottom: 12px; }
+.legal-page a { color: var(--accent); }
+
+/* ── FOOTER ── */
+footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); padding: 56px 32px 28px; }
+.footer-inner { max-width: 1160px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-logo { font-family: 'Instrument Serif', serif; font-size: 22px; color: #fff; margin-bottom: 12px; }
+.footer-logo em { font-style: italic; color: #60a5fa; }
+.footer-tagline { font-size: 14px; color: rgba(255,255,255,0.35); line-height: 1.7; max-width: 240px; }
+.footer-col h4 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+.footer-link { display: block; font-size: 14px; color: rgba(255,255,255,0.5); cursor: pointer; margin-bottom: 10px; transition: color 0.15s; }
+.footer-link:hover { color: #fff; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
+.footer-legal { display: flex; gap: 20px; }
+.footer-legal a { font-size: 12px; color: rgba(255,255,255,0.25); cursor: pointer; transition: color 0.15s; }
+.footer-legal a:hover { color: rgba(255,255,255,0.6); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.anim { opacity:0; }
+.anim.in { animation: fadeUp 0.5s ease forwards; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-burger { display: block; }
+  .container { padding: 0 20px; }
+  .hero-inner, .over-hero-inner, .feature-grid, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+  .hero { padding: 48px 20px; }
+  .hero-card { display: none; }
+  .who-grid, .services-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .over-stats-grid { grid-template-columns: 1fr 1fr; }
+  .team-grid, .values-grid { grid-template-columns: 1fr; }
+  .contact-left { padding: 40px 24px; }
+  .contact-right { padding: 40px 24px; }
+  .dienst-body { grid-template-columns: 1fr; gap: 24px; }
+  .dienst-item-header { flex-direction: column; }
+  .footer-top { grid-template-columns: 1fr; gap: 32px; }
+  .form-row { grid-template-columns: 1fr; }
+  .quiz-card-wrap { padding: 0 16px 60px; }
+  .offerte-inner { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="goPage('home')">Transit<em>AI</em></div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="goPage('quiz')">AI Risico Check</button>
+      <button class="nav-link" onclick="goPage('diensten')">Diensten</button>
+      <button class="nav-link" onclick="goPage('over')">Over Ons</button>
+      <button class="nav-link" onclick="goPage('faq')">FAQ</button>
+      <button class="nav-link" onclick="goPage('offerte')">Offerte</button>
+      <button class="nav-cta" onclick="goPage('contact')">Gratis gesprek →</button>
+    </div>
+    <button class="nav-burger" onclick="toggleMobile()">☰</button>
+  </div>
+</nav>
+<div id="mobile-nav">
+  <button onclick="goPage('quiz');toggleMobile()">AI Risico Check</button>
+  <button onclick="goPage('diensten');toggleMobile()">Diensten</button>
+  <button onclick="goPage('over');toggleMobile()">Over Ons</button>
+  <button onclick="goPage('faq');toggleMobile()">FAQ</button>
+  <button onclick="goPage('offerte');toggleMobile()">Offerte aanvragen</button>
+  <button onclick="goPage('contact');toggleMobile()" style="color:var(--accent);font-weight:600;">Gratis gesprek inplannen →</button>
+</div>
+
+<!-- ════════════════════ HOME -->
+<div id="page-home" class="page active">
+
+  <div class="alert-banner">
+    <div class="alert-banner-inner">
+      <strong>⚠️ EU AI Act is van kracht.</strong>
+      Boetes tot <strong>€35 miljoen of 7% van de wereldwijde omzet</strong> — én schadeclaims van gedupeerde klanten.
+      <strong>Geldt ook voor ZZP'ers en kleine bedrijven.</strong>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow">TransitAI — AI Compliance Specialisten</div>
+        <h1>Uw bedrijf <em>compliant</em><br>met de nieuwe AI-wet.</h1>
+        <p class="hero-sub">TransitAI begeleidt ZZP'ers, MKB en enterprise organisaties bij de overgang naar verantwoorde AI — juridisch waterdicht, praktisch uitvoerbaar, zonder gedoe.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="goPage('quiz')">→ Check uw AI-risico gratis</button>
+          <button class="btn btn-secondary btn-lg" onclick="goPage('contact')">Gratis gesprek inplannen</button>
+        </div>
+        <div class="hero-trust">
+          <div class="hero-trust-item">⚖️ <strong>Juristen & Developers</strong></div>
+          <div class="hero-trust-item">🏢 <strong>KVK 77933877</strong> — Den Haag</div>
+          <div class="hero-trust-item">✅ <strong>ZZP · MKB · Enterprise</strong></div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-title">Wat staat er op het spel?</div>
+        <div class="hero-card-sub">Organisaties die niet compliant zijn riskeren:</div>
+        <div class="penalty-box">
+          <div class="penalty-box-title">⚠️ Mogelijke sancties EU AI Act</div>
+          <div class="penalty-item">Boetes tot <strong>€35 miljoen</strong> of 7% van de wereldwijde jaaromzet</div>
+          <div class="penalty-item">Schadeclaims van klanten die schade leden door uw AI-systemen</div>
+          <div class="penalty-item">Gedwongen stillegging van AI-systemen door toezichthouder</div>
+          <div class="penalty-item">Reputatieschade en verlies van klantenvertrouwen</div>
+        </div>
+        <div class="risk-bars">
+          <div class="risk-bar-row">
+            <div class="risk-bar-top"><span>Nederlandse MKB-bedrijven nog niet compliant</span><span style="color:var(--danger)">~78%</span></div>
+            <div class="risk-bar-track"><div class="risk-bar-fill fill-r" style="width:78%"></div></div>
+          </div>
+          <div class="risk-bar-row">
+            <div class="risk-bar-top"><span>ZZP'ers die ChatGPT zakelijk gebruiken</span><span style="color:var(--warn)">~61%</span></div>
+            <div class="risk-bar-track"><div class="risk-bar-fill fill-a" style="width:61%"></div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="goPage('quiz')">Start gratis risicoscan →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Who -->
+  <section class="section" style="background:var(--white);">
+    <div class="container">
+      <div class="label">Voor wie</div>
+      <h2 style="font-size:clamp(28px,3.5vw,44px);letter-spacing:-0.8px;max-width:560px;">De AI Act geldt voor <em style="font-style:italic;color:var(--accent)">iedereen</em> die AI gebruikt.</h2>
+      <p style="color:var(--muted);margin-top:12px;max-width:540px;font-size:15px;line-height:1.75;">Veel bedrijven denken dat de wet alleen grote techbedrijven treft. Maar als u ChatGPT gebruikt om documenten samen te vatten, e-mails op te stellen of klanten te helpen — bent u in scope.</p>
+      <div class="who-grid">
+        <div class="who-card">
+          <div class="who-icon-wrap">🧑‍💻</div>
+          <h3>ZZP'er</h3>
+          <p>Gebruikt u ChatGPT, Gemini of andere AI-tools voor uw werk? Dan valt u onder de AI Act. Wij helpen u snel en betaalbaar uw risico's in kaart brengen.</p>
+          <div class="who-fine">⚠️ Ja, ook als eenmanszaak</div>
+        </div>
+        <div class="who-card">
+          <div class="who-icon-wrap">🏢</div>
+          <h3>MKB</h3>
+          <p>Van HR-software tot klantenservice-bots: AI-gebruik is overal. Zonder compliance-aanpak loopt u risico op boetes én schadeclaims van klanten of medewerkers.</p>
+          <div class="who-fine">⚠️ Schadeclaims van klanten zijn reëel</div>
+        </div>
+        <div class="who-card">
+          <div class="who-icon-wrap">🌐</div>
+          <h3>Enterprise</h3>
+          <p>Complexe AI-stacks vereisen een gestructureerde compliance-architectuur. Wij leveren boardroom-ready rapportages en volledige implementatiebegeleiding.</p>
+          <div class="who-fine">⚠️ 7% omzet bij ernstige overtredingen</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature -->
+  <section class="section">
+    <div class="container">
+      <div class="feature-grid">
+        <div>
+          <div class="label">Onze aanpak</div>
+          <h2 style="font-size:clamp(28px,3.5vw,44px);letter-spacing:-0.8px;margin-bottom:20px;">Juristen én developers.<br><em style="font-style:italic;color:var(--accent)">Niet of/of.</em></h2>
+          <p style="font-size:16px;color:var(--ink2);line-height:1.8;margin-bottom:0;">Wij zijn het enige kantoor dat juridisch advies combineert met technische implementatiekracht. U hoeft niet eerst een advocaat in te schakelen en daarna een developer te zoeken — wij doen het samen.</p>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-dot">⚖️</div>
+              <div>
+                <h4>Juridische compliance</h4>
+                <p>EU AI Act, AVG, aansprakelijkheidsrecht — onze juristen vertalen complexe wetgeving naar concrete actiepunten voor uw organisatie.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-dot">💻</div>
+              <div>
+                <h4>Technische implementatie</h4>
+                <p>Wij stoppen niet bij het advies. Onze developers zetten de aanbevelingen ook daadwerkelijk om in uw systemen en processen.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-dot">📋</div>
+              <div>
+                <h4>Alles op offerte</h4>
+                <p>Geen vaste pakketten of verborgen kosten. U betaalt alleen voor wat uw organisatie werkelijk nodig heeft.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feature-img">
+          <div style="font-size:13px;color:var(--muted);margin-bottom:16px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Compliance traject op maat</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+              <span style="background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">1</span>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Gratis risicoscan</div>
+                <div style="font-size:12px;color:var(--muted);">12 vragen, direct resultaat</div>
+              </div>
+              <span style="margin-left:auto;font-size:12px;background:var(--success-bg);color:var(--success);padding:3px 10px;border-radius:100px;font-weight:500;">Gratis</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+              <span style="background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">2</span>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Adviesgesprek</div>
+                <div style="font-size:12px;color:var(--muted);">Persoonlijke analyse met specialist</div>
+              </div>
+              <span style="margin-left:auto;font-size:12px;background:var(--success-bg);color:var(--success);padding:3px 10px;border-radius:100px;font-weight:500;">Gratis</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+              <span style="background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">3</span>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Plan van aanpak</div>
+                <div style="font-size:12px;color:var(--muted);">Juridisch & technisch implementatieplan</div>
+              </div>
+              <span style="margin-left:auto;font-size:12px;background:var(--accent-light);color:var(--accent);padding:3px 10px;border-radius:100px;font-weight:500;">Op offerte</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);">
+              <span style="background:var(--accent);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">4</span>
+              <div>
+                <div style="font-size:14px;font-weight:600;">Implementatie & certificering</div>
+                <div style="font-size:12px;color:var(--muted);">Volledig compliant, gedocumenteerd</div>
+              </div>
+              <span style="margin-left:auto;font-size:12px;background:var(--accent-light);color:var(--accent);padding:3px 10px;border-radius:100px;font-weight:500;">Op offerte</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section" style="background:var(--white);">
+    <div class="container">
+      <div class="label">Diensten</div>
+      <h2 style="font-size:clamp(28px,3.5vw,44px);letter-spacing:-0.8px;">Van compliance tot <em style="font-style:italic;color:var(--accent)">AI-transformatie.</em></h2>
+      <div class="services-grid">
+        <div class="service-card featured" onclick="goPage('diensten')">
+          <div class="service-featured-tag">★ Meest gevraagd</div>
+          <div class="service-icon">⚖️</div>
+          <h3>EU AI Act Compliance</h3>
+          <p>Volledige begeleiding van risicoscan tot conformiteitscertificering. Juridisch waterdicht, technisch geïmplementeerd.</p>
+          <div class="service-link">Meer informatie →</div>
+        </div>
+        <div class="service-card" onclick="goPage('diensten')">
+          <div class="service-icon">💬</div>
+          <h3>Virtueel AI Klantenservice</h3>
+          <p>24/7 AI-medewerker die uw klanten helpt via chat, e-mail en WhatsApp — volledig getraind op uw bedrijfsprocessen.</p>
+          <div class="service-link">Meer informatie →</div>
+        </div>
+        <div class="service-card" onclick="goPage('diensten')">
+          <div class="service-icon">📞</div>
+          <h3>AI Inbound-Call Medewerker</h3>
+          <p>Spraakgestuurde AI die inkomende oproepen professioneel afhandelt, ook buiten kantoortijden.</p>
+          <div class="service-link">Meer informatie →</div>
+        </div>
+        <div class="service-card" onclick="goPage('diensten')">
+          <div class="service-icon">🤖</div>
+          <h3>OpenClaw AI Agent</h3>
+          <p>Autonome AI-agent die complexe bedrijfsprocessen van begin tot eind zelfstandig uitvoert.</p>
+          <div class="service-link">Meer informatie →</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px;">
+        <button class="btn btn-secondary" onclick="goPage('diensten')">Alle diensten bekijken</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <div class="cta-banner">
+    <div class="container">
+      <h2>Wil je weten waar je staat?<br><em>De scan duurt 4 minuten.</em></h2>
+      <p>Gratis, geen registratie nodig, direct resultaat. Of plan direct een gratis gesprek in met een van onze specialisten.</p>
+      <div class="cta-banner-btns">
+        <button class="btn btn-white btn-lg" onclick="goPage('quiz')">Start gratis risicoscan →</button>
+        <button class="btn btn-outline-white btn-lg" onclick="goPage('contact')">Gratis gesprek inplannen</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">Transit<em>AI</em></div>
+          <div class="footer-tagline">De transitie naar AI voor uw bedrijf — juridisch sterk, technisch solide. Een handelsnaam van Jajo Consult Beheer B.V.</div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigatie</h4>
+          <a class="footer-link" onclick="goPage('quiz')">AI Risico Check</a>
+          <a class="footer-link" onclick="goPage('diensten')">Diensten</a>
+          <a class="footer-link" onclick="goPage('over')">Over Ons</a>
+          <a class="footer-link" onclick="goPage('faq')">FAQ</a>
+          <a class="footer-link" onclick="goPage('contact')">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Diensten</h4>
+          <a class="footer-link" onclick="goPage('diensten')">EU AI Act Compliance</a>
+          <a class="footer-link" onclick="goPage('diensten')">AI Klantenservice</a>
+          <a class="footer-link" onclick="goPage('diensten')">AI Inbound-Call</a>
+          <a class="footer-link" onclick="goPage('diensten')">OpenClaw Agent</a>
+          <a class="footer-link" onclick="goPage('diensten')">ChatGPT Training</a>
+        </div>
+        <div class="footer-col">
+          <h4>Juridisch</h4>
+          <a class="footer-link" onclick="goPage('privacy')">Privacybeleid</a>
+          <a class="footer-link" onclick="goPage('voorwaarden')">Algemene Voorwaarden</a>
+          <a class="footer-link" onclick="goPage('offerte')">Offerte aanvragen</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877 · Benoordehoutseweg 23, 2596BA Den Haag</div>
+        <div class="footer-legal">
+          <a onclick="goPage('privacy')">Privacy</a>
+          <a onclick="goPage('voorwaarden')">Voorwaarden</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════ QUIZ PAGE -->
+<div id="page-quiz" class="page">
+  <div class="quiz-page-hero">
+    <div class="label" style="justify-content:center;">Gratis · Geen registratie · Direct resultaat</div>
+    <h1>Is uw bedrijf klaar voor de <em>Europese AI-wet?</em></h1>
+    <p>Beantwoord een paar vragen over uw situatie en AI-gebruik. U ontvangt direct een risicoscore met een overzicht van uw kwetsbaarheden en concrete vervolgstappen.</p>
+    <div class="quiz-chips">
+      <span class="chip chip-blue">✓ Geldt voor ZZP'ers</span>
+      <span class="chip chip-blue">✓ Geldt voor MKB</span>
+      <span class="chip chip-blue">✓ Geldt voor Enterprise</span>
+    </div>
+    <div class="quiz-penalty-teaser">
+      <span>⚠ Boetes tot <strong>€35 miljoen</strong></span>
+      <span>⚠ Schadeclaims door klanten</span>
+      <span>⚠ Gedwongen stopzetting AI-systemen</span>
+      <span>⚠ Reputatieschade</span>
+    </div>
+  </div>
+
+  <div class="quiz-card-wrap">
+    <div class="quiz-card" id="quiz-card">
+      <div class="quiz-lang-bar">
+        <span class="quiz-lang-bar-label">Taal / Language:</span>
+        <div class="lang-toggle">
+          <button class="lang-btn" id="btn-nl" onclick="setLang('nl')">🇳🇱 Nederlands</button>
+          <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+        </div>
+      </div>
+
+      <!-- Start panel -->
+      <div id="quiz-start-panel">
+        <div style="font-size:40px;margin-bottom:16px;">🔍</div>
+        <h3 id="qs-title">Start uw gratis AI Act risicoscan</h3>
+        <p id="qs-desc">De scan bestaat uit een paar gerichte vragen en duurt circa 4 minuten. Wij stellen de vragen af op uw type organisatie — een ZZP'er krijgt andere vragen dan een groot bedrijf.</p>
+        <button class="btn btn-primary btn-lg" onclick="startQuiz()" id="qs-btn" style="width:100%;justify-content:center;">Begin de scan →</button>
+        <div class="quiz-start-meta" id="qs-meta">
+          <span>Geen account nodig</span>
+          <span>100% gratis</span>
+          <span>Direct resultaat</span>
+          <span>Circa 4 minuten</span>
+        </div>
+      </div>
+
+      <!-- Quiz body -->
+      <div id="quiz-body">
+        <div class="quiz-progress-track"><div class="quiz-progress-bar" id="q-progress"></div></div>
+        <div class="quiz-header">
+          <span class="quiz-step-label" id="q-step-label">Vraag</span>
+          <span class="quiz-step-count" id="q-step-count">1 / 12</span>
+        </div>
+        <div class="quiz-question-area" id="q-area"></div>
+        <div class="quiz-opts" id="q-opts"></div>
+        <div class="quiz-nav">
+          <button class="quiz-nav-back" id="q-back" onclick="qBack()">← <span id="q-back-lbl">Terug</span></button>
+          <button class="quiz-nav-next" id="q-next" onclick="qNext()" disabled><span id="q-next-lbl">Volgende →</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Also offer direct consult -->
+    <div style="text-align:center;margin-top:24px;padding:24px;background:var(--white);border:1px solid var(--border);border-radius:12px;">
+      <p style="font-size:15px;color:var(--ink2);margin-bottom:12px;">Wilt u direct een consult aanvragen zonder de scan?</p>
+      <button class="btn btn-secondary" onclick="goPage('contact')">📅 Plan gratis gesprek in met onze specialist</button>
+    </div>
+  </div>
+
+  <!-- Results (below card, scrolled to) -->
+  <div id="quiz-results">
+    <div class="results-wrap">
+      <div id="results-score-card" class="results-score-card">
+        <div class="results-score-top">
+          <div class="results-score-label" id="r-score-lbl">Uw risicoscore</div>
+          <div class="score-gauge">
+            <svg viewBox="0 0 180 90">
+              <path class="gauge-bg-arc" d="M 18 82 A 72 72 0 0 1 162 82"/>
+              <path class="gauge-fill-arc" id="gauge-arc" d="M 18 82 A 72 72 0 0 1 162 82" stroke="#1a56db" stroke-dasharray="226" stroke-dashoffset="226"/>
+            </svg>
+            <div class="score-display">
+              <div class="score-big" id="r-score-num">0</div>
+              <div class="score-of">/100</div>
+            </div>
+          </div>
+          <div class="results-verdict" id="r-verdict">—</div>
+        </div>
+        <div class="results-score-bottom">
+          <div class="results-alert" id="r-alert"></div>
+        </div>
+      </div>
+
+      <div class="results-section">
+        <div class="results-section-title" id="r-breakdown-title">Risicoverdeling per categorie</div>
+        <div class="breakdown-rows" id="r-breakdown"></div>
+      </div>
+
+      <div class="results-section">
+        <div class="results-section-title" id="r-steps-title">Aanbevolen vervolgstappen</div>
+        <div class="steps-list" id="r-steps"></div>
+      </div>
+
+      <div class="results-cta-card">
+        <h3 id="r-cta-title">Plan een gratis adviesgesprek</h3>
+        <p id="r-cta-p">Onze specialisten analyseren uw specifieke situatie en leveren een concreet plan van aanpak — inclusief juridisch advies en technische implementatiestappen.</p>
+        <button class="btn btn-white btn-lg" onclick="goPage('contact')" id="r-cta-btn">📅 Maak een gratis afspraak</button>
+        <br>
+        <button class="results-restart" onclick="restartQuiz()" id="r-restart">Scan opnieuw uitvoeren</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877</div>
+        <div class="footer-legal">
+          <a onclick="goPage('privacy')">Privacy</a>
+          <a onclick="goPage('voorwaarden')">Voorwaarden</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════ DIENSTEN -->
+<div id="page-diensten" class="page">
+  <div class="dienst-hero">
+    <div class="dienst-hero-inner">
+      <div class="label">Wat wij doen</div>
+      <h1>Onze <em>Diensten</em></h1>
+      <p>Van juridische compliance tot volledige AI-transformatie. Alles op maat, alles op offerte — u betaalt alleen voor wat uw organisatie daadwerkelijk nodig heeft.</p>
+    </div>
+  </div>
+
+  <div class="diensten-list">
+
+    <div class="dienst-item featured">
+      <div class="dienst-item-header">
+        <div class="dienst-item-header-left">
+          <div class="dienst-item-icon">⚖️</div>
+          <div>
+            <div class="dienst-item-title">EU AI Act Compliance</div>
+            <div class="dienst-item-type">Juridisch · Strategisch · Implementatie</div>
+          </div>
+        </div>
+        <div class="dienst-featured-badge">Meest gevraagd</div>
+      </div>
+      <div class="dienst-body">
+        <div class="dienst-desc">
+          <p>De Europese AI Act is de eerste uitgebreide AI-wetgeving ter wereld en geldt voor iedere organisatie die AI gebruikt of aanbiedt binnen de EU — ongeacht de grootte. Niet compliant zijn is geen optie: boetes kunnen oplopen tot <strong>€35 miljoen of 7% van de wereldwijde jaaromzet</strong>, en gedupeerde klanten kunnen schadeclaims indienen.</p>
+          <p>TransitAI begeleidt u van de eerste risicoscan tot volledige conformiteit. Onze aanpak combineert juridische expertise met technische implementatiekracht — u hoeft niet twee partijen in te schakelen.</p>
+        </div>
+        <div class="dienst-features">
+          <div class="dienst-features-title">Wat is inbegrepen</div>
+          <div class="dienst-feature">Volledige risico- en conformiteitsscan van uw AI-systemen</div>
+          <div class="dienst-feature">Classificatie van systemen (verboden, hoog-risico, beperkt, minimaal)</div>
+          <div class="dienst-feature">Verplichte technische documentatie en risicoanalyses</div>
+          <div class="dienst-feature">Implementatie van menselijk toezicht en audittrails</div>
+          <div class="dienst-feature">Training van medewerkers en management</div>
+          <div class="dienst-feature">Doorlopend compliance-monitoring en advies</div>
+          <div class="dienst-feature">Boardroom-ready rapportage</div>
+        </div>
+      </div>
+      <div class="dienst-footer">
+        <div class="dienst-price-note"><strong>Prijsstelling:</strong> Op offerte — afgestemd op uw organisatiegrootte en situatie</div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('offerte')">Offerte aanvragen →</button>
+      </div>
+    </div>
+
+    <div class="dienst-item">
+      <div class="dienst-item-header">
+        <div class="dienst-item-header-left">
+          <div class="dienst-item-icon">💬</div>
+          <div>
+            <div class="dienst-item-title">Virtueel AI Klantenservice</div>
+            <div class="dienst-item-type">Implementatie · Automatisering · 24/7</div>
+          </div>
+        </div>
+      </div>
+      <div class="dienst-body">
+        <div class="dienst-desc">
+          <p>Stel u voor: uw klantenservice is 24 uur per dag, 7 dagen per week beschikbaar, spreekt meerdere talen, kent uw producten door en door, en maakt nooit een fout in de doorverwijzing. Dat is wat een goed geïmplementeerde AI-klantenservice doet.</p>
+          <p>Wij ontwerpen, trainen en implementeren een AI-klantenserviceoplossing die volledig aansluit op uw bedrijfsprocessen — van e-mail tot webchat tot WhatsApp. Volledig AVG- en AI Act-compliant ingericht.</p>
+        </div>
+        <div class="dienst-features">
+          <div class="dienst-features-title">Wat is inbegrepen</div>
+          <div class="dienst-feature">Integratie met uw bestaande CRM, ticketsysteem of website</div>
+          <div class="dienst-feature">Training op uw eigen producten en bedrijfsprocessen</div>
+          <div class="dienst-feature">Meertalige ondersteuning (NL, EN, DE, FR en meer)</div>
+          <div class="dienst-feature">Naadloze overdracht naar menselijke medewerker</div>
+          <div class="dienst-feature">Volledig AVG- en AI Act-compliant opgezet</div>
+        </div>
+      </div>
+      <div class="dienst-footer">
+        <div class="dienst-price-note"><strong>Prijsstelling:</strong> Op offerte</div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('offerte')">Offerte aanvragen →</button>
+      </div>
+    </div>
+
+    <div class="dienst-item">
+      <div class="dienst-item-header">
+        <div class="dienst-item-header-left">
+          <div class="dienst-item-icon">📞</div>
+          <div>
+            <div class="dienst-item-title">AI Inbound-Call Medewerker</div>
+            <div class="dienst-item-type">Implementatie · Telecom · Spraak-AI</div>
+          </div>
+        </div>
+      </div>
+      <div class="dienst-body">
+        <div class="dienst-desc">
+          <p>Gemiste oproepen kosten omzet. Onze AI Inbound-Call Medewerker neemt inkomende oproepen professioneel aan — dag en nacht, ook in weekenden en vakanties.</p>
+          <p>De AI begrijpt gesproken Nederlands, identificeert de reden van het gesprek, geeft de beller de juiste informatie of plant een terugbelafspraak in, en bezorgt een gespreksverslag direct in uw systeem.</p>
+        </div>
+        <div class="dienst-features">
+          <div class="dienst-features-title">Wat is inbegrepen</div>
+          <div class="dienst-feature">Natuurlijke spraakherkenning in hoog-kwaliteits Nederlands</div>
+          <div class="dienst-feature">Integratie met uw agenda, CRM en ticketsysteem</div>
+          <div class="dienst-feature">Automatische gespreksverslagen en follow-up taken</div>
+          <div class="dienst-feature">Doorschakeling naar medewerker bij complexe gesprekken</div>
+          <div class="dienst-feature">AI-transparantiekennisgeving ingebouwd (conform AI Act)</div>
+        </div>
+      </div>
+      <div class="dienst-footer">
+        <div class="dienst-price-note"><strong>Prijsstelling:</strong> Op offerte</div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('offerte')">Offerte aanvragen →</button>
+      </div>
+    </div>
+
+    <div class="dienst-item">
+      <div class="dienst-item-header">
+        <div class="dienst-item-header-left">
+          <div class="dienst-item-icon">🤖</div>
+          <div>
+            <div class="dienst-item-title">OpenClaw AI Agent</div>
+            <div class="dienst-item-type">Implementatie · Procesautomatisering · AI Agent</div>
+          </div>
+        </div>
+      </div>
+      <div class="dienst-body">
+        <div class="dienst-desc">
+          <p>OpenClaw is een krachtig AI-agent framework waarmee autonome AI-medewerkers worden gebouwd die complexe, meerstaps-taken zelfstandig uitvoeren. Denk aan: contracten beoordelen, offertes genereren, rapporten opstellen of interne processen van begin tot eind afhandelen.</p>
+          <p>Wij implementeren OpenClaw in uw bestaande infrastructuur, koppelen het aan uw databronnen en configureren de agent volledig op uw bedrijfsprocessen.</p>
+        </div>
+        <div class="dienst-features">
+          <div class="dienst-features-title">Wat is inbegrepen</div>
+          <div class="dienst-feature">Maatwerk implementatie en configuratie in uw omgeving</div>
+          <div class="dienst-feature">Koppeling met interne systemen (ERP, CRM, databases, APIs)</div>
+          <div class="dienst-feature">Ontwerp van workflows voor complexe meerstaps-processen</div>
+          <div class="dienst-feature">Veiligheids- en compliance-audit van de agent-configuratie</div>
+          <div class="dienst-feature">Training en documentatie voor uw team</div>
+        </div>
+      </div>
+      <div class="dienst-footer">
+        <div class="dienst-price-note"><strong>Prijsstelling:</strong> Op offerte</div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('offerte')">Offerte aanvragen →</button>
+      </div>
+    </div>
+
+    <div class="dienst-item">
+      <div class="dienst-item-header">
+        <div class="dienst-item-header-left">
+          <div class="dienst-item-icon">🎓</div>
+          <div>
+            <div class="dienst-item-title">ChatGPT Juridische Training voor Medewerkers</div>
+            <div class="dienst-item-type">Training · Compliance · Medewerkersopleiding</div>
+          </div>
+        </div>
+      </div>
+      <div class="dienst-body">
+        <div class="dienst-desc">
+          <p>Uw medewerkers gebruiken waarschijnlijk al ChatGPT of soortgelijke tools — met of zonder uw medeweten. Zonder de juiste training brengt dit aanzienlijke risico's: datalekken, auteursrechtschendingen, en schendingen van de AI Act.</p>
+          <p>Onze training leert uw medewerkers hoe zij AI-tools verantwoord, veilig en effectief kunnen inzetten. Volledig op maat voor uw branche.</p>
+        </div>
+        <div class="dienst-features">
+          <div class="dienst-features-title">Wat is inbegrepen</div>
+          <div class="dienst-feature">Training op maat voor uw sector en functieprofiel</div>
+          <div class="dienst-feature">Praktische do's en don'ts voor dagelijks AI-gebruik</div>
+          <div class="dienst-feature">Juridische kaders: AVG, auteursrecht, AI Act, aansprakelijkheid</div>
+          <div class="dienst-feature">Prompting best practices voor professionele resultaten</div>
+          <div class="dienst-feature">Certificaat van deelname en intern AI-beleidsdocument</div>
+        </div>
+      </div>
+      <div class="dienst-footer">
+        <div class="dienst-price-note"><strong>Prijsstelling:</strong> Op offerte</div>
+        <button class="btn btn-primary btn-sm" onclick="goPage('offerte')">Offerte aanvragen →</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cta-banner">
+    <div class="container">
+      <h2>Niet zeker welke dienst u nodig heeft?</h2>
+      <p>Doe eerst de gratis risicoscan of plan een vrijblijvend gesprek in. Wij adviseren u eerlijk wat uw organisatie nodig heeft.</p>
+      <div class="cta-banner-btns">
+        <button class="btn btn-white btn-lg" onclick="goPage('quiz')">Start gratis scan →</button>
+        <button class="btn btn-outline-white btn-lg" onclick="goPage('contact')">Gratis gesprek</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-bottom"><div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877</div><div class="footer-legal"><a onclick="goPage('privacy')">Privacy</a><a onclick="goPage('voorwaarden')">Voorwaarden</a></div></div></div></footer>
+</div>
+
+<!-- ════════════════════ OVER ONS -->
+<div id="page-over" class="page">
+  <div class="over-hero">
+    <div class="over-hero-inner">
+      <div>
+        <div class="label">Over TransitAI</div>
+        <h1>Juristen en developers.<br><em>Samen voor uw AI-toekomst.</em></h1>
+        <p>TransitAI is opgericht vanuit een simpele overtuiging: de overgang naar AI moet juridisch verantwoord én technisch sterk zijn. Bedrijven mogen nooit hoeven kiezen tussen innovatie en compliance.</p>
+        <p>Vanuit Den Haag bedienen wij ZZP'ers, MKB en enterprise organisaties door heel Nederland.</p>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="goPage('contact')">Neem contact op →</button>
+      </div>
+      <div>
+        <div class="over-stats-grid">
+          <div class="over-stat"><div class="over-stat-num">100%</div><div class="over-stat-label">Offerte op maat — geen vaste pakketten</div></div>
+          <div class="over-stat"><div class="over-stat-num">EU</div><div class="over-stat-label">AI Act gecertificeerde expertise</div></div>
+          <div class="over-stat"><div class="over-stat-num">⚖+💻</div><div class="over-stat-label">Juristen én developers onder één dak</div></div>
+          <div class="over-stat"><div class="over-stat-num">ZZP MKB ENT</div><div class="over-stat-label">Wij bedienen alle organisatietypen</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="over-body">
+    <div class="over-section">
+      <h2>Ons verhaal</h2>
+      <p>TransitAI is ontstaan vanuit de frustratie van onze klanten. Bedrijven die overspoeld werden door AI-mogelijkheden maar geen idee hadden of ze het mochten, konden of zouden moeten implementeren. Advocaten die wel de wet kenden maar niet wisten hoe een taalmodel werkt. Developers die briljante AI-tools bouwden maar zich niet realiseerden dat ze de wet overtraden.</p>
+      <p>Wij zijn die brug. Ons team bestaat uit juristen gespecialiseerd in technologierecht en EU-regelgeving, gecombineerd met ervaren AI-engineers en developers. Die combinatie maakt ons uniek: wij begrijpen zowel wat de wet vereist als hoe u dat technisch implementeert.</p>
+      <p>Vanuit Benoordehoutseweg 23 in Den Haag — hartje Nederland's juridische en diplomatieke centrum — adviseren wij klanten door het hele land.</p>
+    </div>
+    <div class="over-section">
+      <h2>Ons team</h2>
+      <div class="team-grid">
+        <div class="team-card"><div class="team-av">J</div><div class="team-name">Juridisch Team</div><div class="team-role">EU AI Act · AVG · Technologierecht</div><div class="team-bio">Gespecialiseerd in de kruising van technologie en recht. Zij vertalen complexe EU-regelgeving naar concrete, begrijpelijke adviezen.</div></div>
+        <div class="team-card"><div class="team-av">D</div><div class="team-name">Development Team</div><div class="team-role">AI Engineering · Implementatie</div><div class="team-bio">Onze engineers zetten juridisch advies om in technische werkelijkheid. Van AI-agent implementaties tot compliance-tooling.</div></div>
+        <div class="team-card"><div class="team-av">A</div><div class="team-name">Advies Team</div><div class="team-role">Strategie · Implementatieplan</div><div class="team-bio">Helpen u de vertaalslag te maken van waar u nu staat naar waar u naartoe wilt. Praktisch en resultaatgericht.</div></div>
+      </div>
+    </div>
+    <div class="over-section">
+      <h2>Onze waarden</h2>
+      <div class="values-grid">
+        <div class="value-card"><h4>Eerlijkheid boven verkooppraat</h4><p>Wij vertellen u wat u nodig heeft — ook als dat minder is dan wat u dacht. Geen onnodige trajecten.</p></div>
+        <div class="value-card"><h4>Praktisch en uitvoerbaar</h4><p>Elk advies dat wij geven is concreet en implementeerbaar. Geen rapporten die in een la verdwijnen.</p></div>
+        <div class="value-card"><h4>Klein maar volledig</h4><p>De EU AI Act geldt ook voor de ZZP'er. Wij nemen elke klant even serieus, ongeacht de organisatieomvang.</p></div>
+        <div class="value-card"><h4>Kennis delen</h4><p>Wij bieden onze risicoscan gratis aan voor iedereen. Een goed geïnformeerd Nederland is beter voor iedereen.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-bottom"><div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877</div><div class="footer-legal"><a onclick="goPage('privacy')">Privacy</a><a onclick="goPage('voorwaarden')">Voorwaarden</a></div></div></div></footer>
+</div>
+
+<!-- ════════════════════ FAQ -->
+<div id="page-faq" class="page">
+  <section class="section" style="background:var(--white);border-bottom:1px solid var(--border);padding-bottom:56px;">
+    <div class="container" style="text-align:center;">
+      <div class="label" style="justify-content:center;">Veelgestelde Vragen</div>
+      <h1 style="font-size:clamp(32px,4vw,52px);letter-spacing:-0.8px;margin-bottom:16px;">Alles wat u wil weten over de <em style="font-style:italic;color:var(--accent)">EU AI Act.</em></h1>
+      <p style="font-size:16px;color:var(--muted);max-width:520px;margin:0 auto;font-weight:300;line-height:1.7;">Staat uw vraag er niet bij? Neem gerust contact op — de eerste oriëntatie is altijd gratis.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="font-size:24px;margin-bottom:24px;letter-spacing:-0.3px;">Algemeen over de EU AI Act</h2>
+      <div class="faq-list" style="margin-top:0;">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Wat is de EU AI Act precies?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">De EU AI Act is de eerste uitgebreide Europese wet die het gebruik, de ontwikkeling en het aanbod van kunstmatige intelligentie reguleert. De wet is in augustus 2024 van kracht gegaan en wordt gefaseerd ingevoerd. De wet verdeelt AI-systemen in risicocategorieën — van verboden systemen tot systemen met minimaal risico — en stelt per categorie eisen aan documentatie, toezicht, transparantie en veiligheid.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Geldt de AI Act ook voor mij als ZZP'er?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a"><strong>Ja.</strong> De AI Act maakt geen uitzondering voor kleine bedrijven of eenmanszaken. Als u AI-systemen gebruikt, aanbiedt of inzet in uw bedrijfsvoering — ook als gebruiker van ChatGPT, Gemini, Claude of andere tools — kunt u onder de verplichtingen vallen. De omvang van de verplichtingen hangt af van hoe u AI gebruikt, niet van de grootte van uw organisatie. Wij helpen u exact bepalen wat voor uw situatie geldt.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Welke boetes zijn mogelijk bij niet-naleving?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">De AI Act kent een drietraps boetestelsel:
+            <ul>
+              <li><strong>Tot €35 miljoen of 7% van de wereldwijde jaaromzet</strong> bij de ernstigste overtredingen (gebruik van verboden AI-systemen)</li>
+              <li><strong>Tot €15 miljoen of 3% van de wereldwijde jaaromzet</strong> bij schending van verplichtingen voor hoog-risico systemen</li>
+              <li><strong>Tot €7,5 miljoen of 1% van de jaaromzet</strong> bij verstrekking van onjuiste informatie aan toezichthouders</li>
+            </ul>
+            Daarnaast kunnen klanten of andere gedupeerden schadeclaims indienen als zij schade hebben geleden door een AI-systeem van uw organisatie. Dit is een civielrechtelijk risico bovenop de bestuursrechtelijke boetes.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Wanneer moet ik compliant zijn?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">De AI Act wordt gefaseerd ingevoerd:
+            <ul>
+              <li><strong>Februari 2025:</strong> Verbod op verboden AI-praktijken is van kracht</li>
+              <li><strong>Augustus 2025:</strong> Verplichtingen voor General Purpose AI (zoals grote taalmodellen)</li>
+              <li><strong>Augustus 2026:</strong> Verplichtingen voor hoog-risico AI-systemen in bijlage III</li>
+              <li><strong>Augustus 2027:</strong> Overige verplichtingen</li>
+            </ul>
+            Afhankelijk van hoe u AI gebruikt, kunnen de verplichtingen al nu of binnen korte tijd gelden. Wij adviseren niet te wachten — compliance kost tijd en voorbereiding is goedkoper dan remediation.</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:24px;margin-bottom:24px;margin-top:48px;letter-spacing:-0.3px;">ChatGPT en alledaags AI-gebruik</h2>
+      <div class="faq-list" style="margin-top:0;">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Ik gebruik alleen ChatGPT voor werk — geldt de AI Act dan voor mij?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a"><strong>Mogelijk wel.</strong> Het hangt af van hoe u ChatGPT gebruikt. Als u het inzet voor interne taken zoals teksten schrijven, brainstormen of vertalingen, zijn de risico's beperkt. Maar als u:
+            <ul>
+              <li>Klantgegevens, persoonsgegevens of contracten uploadt naar ChatGPT</li>
+              <li>AI gebruikt om beslissingen te nemen over mensen (sollicitanten, klanten, medewerkers)</li>
+              <li>AI-gegenereerde adviezen direct doorgeeft aan klanten als eigen advies</li>
+              <li>AI inzet in een sector met hogere risico's (zorg, juridisch, financieel)</li>
+            </ul>
+            Dan gelden er specifieke verplichtingen. Doe de gratis scan om uw situatie te beoordelen.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Wat wordt verstaan onder 'verwerking van persoonsgegevens' met AI?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a"><strong>Dit is breder dan de meeste mensen denken.</strong> Verwerking van persoonsgegevens met AI omvat onder meer:
+            <ul>
+              <li>Een document met namen of contactgegevens uploaden naar ChatGPT voor een samenvatting</li>
+              <li>Een e-mail met klantinformatie invoeren in een AI-tool om op te stellen of te verbeteren</li>
+              <li>Een CV uploaden naar een AI-tool om te beoordelen</li>
+              <li>Klantvragen met persoonsgegevens invoeren in een AI-chatbot</li>
+              <li>Een factuur of contract met klantgegevens laten analyseren door AI</li>
+              <li>Audio-opnames van gesprekken laten transcriberen door AI</li>
+              <li>Foto's van medewerkers of klanten uploaden naar een AI-tool</li>
+            </ul>
+            Al deze handelingen kunnen zowel onder de AI Act als onder de AVG vallen. Wij helpen u begrijpen wat dit voor uw specifieke situatie betekent.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Mag ik klantdocumenten uploaden in ChatGPT?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">Dit hangt af van wat er in de documenten staat en welke versie van ChatGPT u gebruikt. In principe geldt: <strong>upload nooit documenten met identificeerbare klantgegevens via de gewone consumentenversie van ChatGPT</strong>, tenzij u een zakelijke overeenkomst heeft met OpenAI (ChatGPT Enterprise of API met verwerkersovereenkomst). Zonder die overeenkomst heeft u geen garanties over hoe de gegevens worden verwerkt, opgeslagen of gebruikt voor trainingsdata — en dat is een AVG-overtreding. Wij kunnen u precies vertellen wat wel en niet mag voor uw specifieke gebruik.</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:24px;margin-bottom:24px;margin-top:48px;letter-spacing:-0.3px;">Over TransitAI</h2>
+      <div class="faq-list" style="margin-top:0;">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Wat kost een traject bij TransitAI?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">Alle diensten van TransitAI worden aangeboden op offerte. Wij werken niet met vaste pakketten, omdat elke organisatie anders is. Een ZZP'er die alleen ChatGPT gebruikt heeft heel andere behoeften dan een MKB-bedrijf met een HR-software die AI gebruikt. De gratis risicoscan en het eerste adviesgesprek zijn altijd gratis en vrijblijvend. Pas daarna stellen wij een offerte op — zonder verplichtingen.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Hoe snel kunnen jullie starten?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">Na het eerste gesprek kunnen wij doorgaans binnen een tot twee weken starten met de eerste fase van een traject. De doorlooptijd is afhankelijk van de complexiteit van uw situatie en de beschikbaarheid van informatie binnen uw organisatie. Voor dringende situaties — bijvoorbeeld als u al een waarschuwing heeft ontvangen — kunnen wij sneller schakelen.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>Zijn jullie ook beschikbaar voor een eenmalig adviesgesprek?</span><span class="faq-icon">+</span></button>
+          <div class="faq-a">Ja. Het eerste oriëntatiegesprek is altijd gratis. Daarna kunt u ook kiezen voor een eenmalig betaald adviesgesprek van één tot twee uur, waarbij wij uw situatie analyseren en concrete aanbevelingen geven — zonder dat u een volledig traject afneemt. Neem contact op voor de mogelijkheden.</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:56px;padding:48px 32px;background:var(--white);border:1px solid var(--border);border-radius:16px;">
+        <h2 style="font-size:28px;margin-bottom:12px;">Heeft u een andere vraag?</h2>
+        <p style="color:var(--muted);margin-bottom:24px;font-size:15px;">Neem vrijblijvend contact op. De eerste oriëntatie is altijd gratis.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="goPage('quiz')">Start gratis scan →</button>
+          <button class="btn btn-secondary" onclick="goPage('contact')">Stel uw vraag</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="footer-inner"><div class="footer-bottom"><div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877</div><div class="footer-legal"><a onclick="goPage('privacy')">Privacy</a><a onclick="goPage('voorwaarden')">Voorwaarden</a></div></div></div></footer>
+</div>
+
+<!-- ════════════════════ OFFERTE -->
+<div id="page-offerte" class="page">
+  <div class="offerte-page">
+    <div class="offerte-inner">
+      <div class="label">Offerte aanvragen</div>
+      <h1>Vraag een offerte aan</h1>
+      <p class="offerte-sub">Vul het formulier in en wij nemen binnen één werkdag contact met u op voor een vrijblijvende offerte op maat. Alle velden met * zijn verplicht.<br><br>Liever eerst een gesprek? <a onclick="goPage('contact')" style="color:var(--accent);cursor:pointer;">Plan een gratis adviesgesprek in.</a></p>
+
+      <div class="offerte-card">
+        <form id="offerte-form" onsubmit="submitOfferte(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Voornaam *</label>
+              <input type="text" class="form-input" name="firstname" placeholder="Jan" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Achternaam *</label>
+              <input type="text" class="form-input" name="lastname" placeholder="Jansen" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-mailadres *</label>
+            <input type="email" class="form-input" name="email" placeholder="jan@bedrijf.nl" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Telefoonnummer</label>
+            <input type="tel" class="form-input" name="phone" placeholder="+31 6 12345678">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Bedrijfsnaam</label>
+              <input type="text" class="form-input" name="company" placeholder="Mijn Bedrijf B.V.">
+            </div>
+            <div class="form-group">
+              <label class="form-label">KVK-nummer</label>
+              <input type="text" class="form-input" name="kvk" placeholder="12345678">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type organisatie *</label>
+            <select class="form-select" name="org_type" required>
+              <option value="">Selecteer...</option>
+              <option value="zzp">ZZP'er / Eenmanszaak</option>
+              <option value="mkb_s">MKB — Klein (2–50 medewerkers)</option>
+              <option value="mkb_m">MKB — Middelgroot (51–250 medewerkers)</option>
+              <option value="enterprise">Enterprise (250+ medewerkers)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gevraagde dienst(en) *</label>
+            <select class="form-select" name="service" required>
+              <option value="">Selecteer de dienst...</option>
+              <option value="compliance">EU AI Act Compliance</option>
+              <option value="klantenservice">Virtueel AI Klantenservice</option>
+              <option value="inbound">AI Inbound-Call Medewerker</option>
+              <option value="openclaw">OpenClaw AI Agent implementatie</option>
+              <option value="training">ChatGPT Juridische Training</option>
+              <option value="meerdere">Meerdere diensten / Weet ik nog niet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sector / Branche</label>
+            <input type="text" class="form-input" name="sector" placeholder="Bijv. Zorg, Juridisch, Retail, IT...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Beschrijving van uw situatie / vraag *</label>
+            <textarea class="form-textarea" name="message" placeholder="Beschrijf kort uw huidige AI-gebruik, wat u wil bereiken en eventuele specifieke vragen of deadlines." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hoe heeft u ons gevonden?</label>
+            <select class="form-select" name="source">
+              <option value="">Optioneel...</option>
+              <option>Google / zoekmachine</option>
+              <option>Social media</option>
+              <option>Aanbeveling van bekende</option>
+              <option>Vakblad / artikel</option>
+              <option>Anders</option>
+            </select>
+          </div>
+          <!-- Hidden field for nodemailer -->
+          <input type="hidden" name="form_type" value="offerte">
+          <input type="hidden" name="timestamp" id="offerte-timestamp">
+          <button type="submit" class="form-submit">Offerte aanvragen →</button>
+          <div class="form-disclaimer">Door dit formulier te verzenden gaat u akkoord met ons <a onclick="goPage('privacy')">privacybeleid</a>. Wij nemen binnen één werkdag contact met u op.</div>
+          <div class="form-success-msg" id="offerte-success">✅ Bedankt voor uw aanvraag! Wij nemen binnen één werkdag contact met u op voor uw offerte op maat.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-bottom"><div class="footer-copy">© 2025 Jajo Consult Beheer B.V. · KVK 77933877</div><div class="footer-legal"><a onclick="goPage('privacy')">Privacy</a><a onclick="goPage('voorwaarden')">Voorwaarden</a></div></div></div></footer>
+</div>
+
+<!-- ════════════════════ CONTACT -->
+<div id="page-contact" class="page">
+  <div class="contact-layout">
+    <div class="contact-left">
+      <div>
+        <div class="label" style="color:#93c5fd;">Neem contact op</div>
+        <h1>Laten we <em>praten.</em></h1>
+        <p>Geen verplichtingen, geen verkoopgesprek. Wij luisteren naar uw situatie en adviseren u eerlijk wat u nodig heeft.</p>
+
+        <div class="free-consult-box">
+          <h3>📅 Gratis adviesgesprek</h3>
+          <p>Wilt u direct een gesprek inplannen met een van onze specialisten? De eerste oriëntatie is volledig gratis en vrijblijvend.</p>
+          <button class="btn-consult" onclick="alert('Vervang dit door uw Calendly-link')">Gesprek inplannen →</button>
+        </div>
+
+        <div class="contact-info">
+          <div class="ci"><div class="ci-icon">📍</div><div class="ci-text"><strong>Bezoekadres</strong>Benoordehoutseweg 23<br>2596BA Den Haag</div></div>
+          <div class="ci"><div class="ci-icon">🏢</div><div class="ci-text"><strong>Bedrijfsnaam</strong>Jajo Consult Beheer B.V.</div></div>
+          <div class="ci"><div class="ci-icon">📋</div><div class="ci-text"><strong>KVK-nummer</strong>77933877</div></div>
+          <div class="ci"><div class="ci-icon">⏰</div><div class="ci-text"><strong>Reactietijd</strong>Binnen één werkdag</div></div>
+        </div>
+        <div class="contact-kvk-note">Jajo Consult Beheer B.V. · KVK 77933877<br>Benoordehoutseweg 23 · 2596BA Den Haag<br>Alle diensten worden aangeboden op basis van offerte.</div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <h2>Stuur een bericht</h2>
+      <p class="form-sub">Voor algemene vragen, samenwerking of een snelle orientatie. Voor een formele offerte gebruikt u het <a onclick="goPage('offerte')" style="color:var(--accent);cursor:pointer;">offerteformulier</a>.</p>
+      <form id="contact-form" onsubmit="submitContact(event)">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Voornaam *</label><input type="text" class="form-input" name="firstname" placeholder="Jan" required></div>
+          <div class="form-group"><label class="form-label">Achternaam *</label><input type="text" class="form-input" name="lastname" placeholder="Jansen" required></div>
+        </div>
+        <div class="form-group"><label class="form-label">E-mailadres *</label><input type="email" class="form-input" name="email" placeholder="jan@bedrijf.nl" required></div>
+        <div class="form-group"><label class="form-label">Bedrijfsnaam</label><input type="text" class="form-input" name="company" placeholder="Mijn Bedrijf B.V."></div>
+        <div class="form-group">
+          <label class="form-label">Type organisatie</label>
+          <select class="form-select" name="org_type">
+            <option value="">Selecteer...</option>
+            <option>ZZP'er / Eenmanszaak</option>
+            <option>MKB (2–250 medewerkers)</option>
+            <option>Enterprise (250+ medewerkers)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Onderwerp</label>
+          <select class="form-select" name="subject">
+            <option value="">Selecteer...</option>
+            <option>EU AI Act Compliance</option>
+            <option>AI Klantenservice</option>
+            <option>AI Inbound-Call</option>
+            <option>OpenClaw Agent</option>
+            <option>ChatGPT Training</option>
+            <option>Gratis adviesgesprek</option>
+            <option>Algemene vraag</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Uw bericht *</label><textarea class="form-textarea" name="message" placeholder="Vertel ons over uw situatie of vraag..." required></textarea></div>
+        <input type="hidden" name="form_type" value="contact">
+        <button type="submit" class="form-submit">Verstuur bericht →</button>
+        <div class="form-disclaimer">Door dit formulier in te sturen gaat u akkoord met ons <a onclick="goPage('privacy')">privacybeleid</a>.</div>
+        <div class="form-success-msg" id="contact-success">✅ Bedankt voor uw bericht! Wij nemen zo snel mogelijk contact met u op.</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PRIVACY -->
+<div id="page-privacy" class="page">
+  <div class="legal-page">
+    <h1>Privacybeleid</h1>
+    <div class="legal-date">Versie 1.0 — Februari 2025 · Jajo Consult Beheer B.V.</div>
+    <h2>1. Wie zijn wij?</h2>
+    <p><strong>Jajo Consult Beheer B.V.</strong>, handelend onder de naam TransitAI, Benoordehoutseweg 23, 2596BA Den Haag, KVK 77933877. Wij zijn de verwerkingsverantwoordelijke in de zin van de AVG.</p>
+    <h2>2. Welke gegevens verwerken wij?</h2>
+    <ul><li>Contactgegevens: naam, e-mailadres, telefoonnummer</li><li>Bedrijfsgegevens: bedrijfsnaam, KVK-nummer, sector</li><li>Communicatiegegevens: inhoud van e-mails en formulieren</li><li>Technische gegevens: IP-adres, browsertype, paginabezoeken</li></ul>
+    <h2>3. Waarvoor gebruiken wij uw gegevens?</h2>
+    <ul><li>Het beantwoorden van vragen en verzoeken</li><li>Het opstellen en uitvoeren van overeenkomsten</li><li>Het verbeteren van onze website en diensten</li><li>Het voldoen aan wettelijke verplichtingen</li></ul>
+    <h2>4. Grondslag</h2>
+    <p>Uitvoering overeenkomst, gerechtvaardigd belang, wettelijke verplichting, of toestemming (art. 6 AVG).</p>
+    <h2>5. Bewaartermijnen</h2>
+    <ul><li>Contactverzoeken: max. 2 jaar na laatste contact</li><li>Klantgegevens: 7 jaar (fiscale bewaarplicht)</li></ul>
+    <h2>6. Delen met derden</h2>
+    <p>Wij delen uw gegevens niet met derden, tenzij noodzakelijk voor de dienstverlening of wettelijk verplicht.</p>
+    <h2>7. Uw rechten</h2>
+    <p>Inzage, rectificatie, verwijdering, beperking, dataportabiliteit en bezwaar. Contact via ons formulier. Klachten bij de Autoriteit Persoonsgegevens.</p>
+    <h2>8. Contact</h2>
+    <p>Jajo Consult Beheer B.V. · Benoordehoutseweg 23 · 2596BA Den Haag · KVK 77933877</p>
+  </div>
+</div>
+
+<!-- ════════════════════ VOORWAARDEN -->
+<div id="page-voorwaarden" class="page">
+  <div class="legal-page">
+    <h1>Algemene Voorwaarden</h1>
+    <div class="legal-date">Versie 1.0 — Februari 2025 · Jajo Consult Beheer B.V.</div>
+    <h2>Artikel 1 — Definities</h2>
+    <p><strong>TransitAI/Opdrachtnemer:</strong> Jajo Consult Beheer B.V., KVK 77933877. <strong>Opdrachtgever:</strong> de partij die een opdracht verstrekt. <strong>Opdracht:</strong> overeengekomen dienstverlening.</p>
+    <h2>Artikel 2 — Toepasselijkheid</h2>
+    <p>Van toepassing op alle offertes, aanbiedingen en overeenkomsten tussen TransitAI en Opdrachtgever.</p>
+    <h2>Artikel 3 — Offertes</h2>
+    <p>Alle diensten worden aangeboden op offerte. Offertes zijn vrijblijvend en geldig 30 dagen na dagtekening.</p>
+    <h2>Artikel 4 — Uitvoering</h2>
+    <p>TransitAI voert de opdracht uit naar beste inzicht en vermogen. Inspanningsverplichting, tenzij schriftelijk anders overeengekomen.</p>
+    <h2>Artikel 5 — Honorarium en betaling</h2>
+    <p>Gebaseerd op de offerte. Facturen te voldoen binnen 14 dagen. Bij overschrijding is de wettelijke handelsrente verschuldigd.</p>
+    <h2>Artikel 6 — Aansprakelijkheid</h2>
+    <p>Aansprakelijkheid beperkt tot verzekeringsuitkering. Maximaal het gefactureerde honorarium (excl. BTW), max. €10.000. Geen aansprakelijkheid voor indirecte schade of gevolgschade.</p>
+    <h2>Artikel 7 — Intellectueel eigendom</h2>
+    <p>Producten blijven eigendom van TransitAI tot volledige betaling. Na betaling: niet-exclusief gebruiksrecht voor eigen gebruik.</p>
+    <h2>Artikel 8 — Gratis risicoscan</h2>
+    <p>De scan is oriënterend en vervangt geen professioneel juridisch advies. TransitAI is niet aansprakelijk voor beslissingen op basis van scanresultaten.</p>
+    <h2>Artikel 9 — Toepasselijk recht</h2>
+    <p>Nederlands recht. Geschillen voor de rechter in het arrondissement Den Haag.</p>
+    <p style="margin-top:40px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);">Jajo Consult Beheer B.V. · KVK 77933877 · Benoordehoutseweg 23, 2596BA Den Haag</p>
+  </div>
+</div>
+
+<!-- ════════════════════ JAVASCRIPT -->
+<script>
+// ─── Routing ────────────────────────────────────────────────────────
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('page-' + id);
+  if (p) { p.classList.add('active'); window.scrollTo(0,0); }
+  document.getElementById('mobile-nav').style.display = 'none';
+}
+function toggleMobile() {
+  const m = document.getElementById('mobile-nav');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+}
+
+// ─── FAQ ────────────────────────────────────────────────────────────
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  item.classList.toggle('open');
+}
+
+// ─── Forms ──────────────────────────────────────────────────────────
+function submitContact(e) {
+  e.preventDefault();
+  // TODO: connect to nodemailer endpoint
+  // const data = new FormData(e.target);
+  document.getElementById('contact-success').style.display = 'block';
+  e.target.querySelector('.form-submit').textContent = 'Verzonden ✓';
+  e.target.querySelector('.form-submit').disabled = true;
+}
+function submitOfferte(e) {
+  e.preventDefault();
+  document.getElementById('offerte-timestamp').value = new Date().toISOString();
+  // TODO: POST to /api/offerte with nodemailer
+  // const formData = Object.fromEntries(new FormData(e.target));
+  // fetch('/api/offerte', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) })
+  document.getElementById('offerte-success').style.display = 'block';
+  e.target.querySelector('.form-submit').textContent = 'Aanvraag verzonden ✓';
+  e.target.querySelector('.form-submit').disabled = true;
+}
+
+// ─── Language ────────────────────────────────────────────────────────
+let activeLang = (() => {
+  const nl = (navigator.language||'nl').toLowerCase().startsWith('nl');
+  return nl ? 'nl' : 'en';
+})();
+
+function setLang(lang) {
+  activeLang = lang;
+  document.getElementById('btn-nl').classList.toggle('active', lang==='nl');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  // Update start panel
+  const t = TX[lang];
+  el('qs-title').textContent = t.startTitle;
+  el('qs-desc').textContent = t.startDesc;
+  el('qs-btn').textContent = t.startBtn;
+  if (quizActive) renderQ();
+}
+
+function el(id) { return document.getElementById(id); }
+
+// ─── Translations ────────────────────────────────────────────────────
+const TX = {
+  nl: {
+    startTitle: 'Start uw gratis AI Act risicoscan',
+    startDesc: 'Wij stellen de vragen af op uw situatie — een ZZP\'er krijgt andere vragen dan een groot bedrijf. Duurt circa 4 minuten.',
+    startBtn: 'Begin de scan →',
+    stepLabel: 'Vraag',
+    back: 'Terug',
+    next: 'Volgende →',
+    finish: 'Bekijk mijn resultaten →',
+    scoreLabel: 'Uw risicoscore',
+    breakdownTitle: 'Risicoverdeling per categorie',
+    stepsTitle: 'Aanbevolen vervolgstappen',
+    ctaTitle: 'Plan een gratis adviesgesprek',
+    ctaP: 'Onze specialisten analyseren uw specifieke situatie en leveren een concreet plan van aanpak — inclusief juridisch advies en technische implementatiestappen.',
+    ctaBtn: '📅 Maak een gratis afspraak',
+    restart: 'Scan opnieuw uitvoeren',
+    verdict: ['⚠ Aandacht vereist', '⚠ Aandacht vereist', '✗ Hoog risico'],
+    verdictClass: ['verdict-warn','verdict-warn','verdict-danger'],
+    alerts: [
+      '<strong>Uw organisatie heeft aandachtspunten.</strong> De scan heeft specifieke risico\'s geïdentificeerd die u vóór de compliance-deadlines moet aanpakken. Veel organisaties in uw situatie weten niet precies wat de AI Act van hen verwacht — dat is precies waar wij u bij helpen. Plan een gratis gesprek in.',
+      '<strong>Uw organisatie loopt een significant compliance-risico.</strong> Meerdere gebieden vereisen actie op korte termijn. Zonder aanpak riskeert u boetes, schadeclaims van klanten én reputatieschade. Plan nu een gesprek met onze specialisten.',
+      '<strong>Uw organisatie verkeert in een hoog-risico situatie.</strong> De scan heeft ernstige compliance-leemtes aangetroffen. De EU AI Act is van kracht — directe actie is noodzakelijk om boetes tot €35 miljoen en schadeclaims van klanten te voorkomen.'
+    ],
+    steps: [
+      ['Breng uw AI-gebruik in kaart', 'Maak een lijst van alle AI-tools die u gebruikt — inclusief ChatGPT, Gemini, Copilot en ingebouwde AI in andere software.'],
+      ['Beoordeel uw risicoclassificatie', 'Bepaal per AI-toepassing de risicocategorie conform de EU AI Act.'],
+      ['Stel prioriteiten', 'Pak de hoog-risico onderdelen eerst aan. Wijs een verantwoordelijke aan voor de compliance-aanpak.'],
+      ['Plan een gratis gesprek', 'Laat onze specialisten uw situatie analyseren en een persoonlijk actieplan opstellen.']
+    ],
+    cats: { org:'Organisatie', ai:'AI-gebruik', data:'Data & Privacy', risk:'Risicobeheer', gov:'Governance' },
+    catDescs: {
+      org:'Organisatiegrootte & structuur',
+      ai:'AI-toepassingen & beslissingen',
+      data:'Dataprivacy & transparantie',
+      risk:'Risicobeheersing & toezicht',
+      gov:'Beleid & verantwoordelijkheid'
+    }
+  },
+  en: {
+    startTitle: 'Start your free AI Act risk scan',
+    startDesc: 'We tailor the questions to your situation — a freelancer gets different questions than a large company. Takes approximately 4 minutes.',
+    startBtn: 'Begin the scan →',
+    stepLabel: 'Question',
+    back: 'Back',
+    next: 'Next →',
+    finish: 'View my results →',
+    scoreLabel: 'Your risk score',
+    breakdownTitle: 'Risk breakdown by category',
+    stepsTitle: 'Recommended next steps',
+    ctaTitle: 'Book a free consultation',
+    ctaP: 'Our specialists will analyse your specific situation and deliver a concrete action plan — including legal advice and technical implementation steps.',
+    ctaBtn: '📅 Book a free appointment',
+    restart: 'Run scan again',
+    verdict: ['⚠ Attention required', '⚠ Attention required', '✗ High risk'],
+    verdictClass: ['verdict-warn','verdict-warn','verdict-danger'],
+    alerts: [
+      '<strong>Your organisation has attention points.</strong> The scan identified specific risks that need to be addressed before compliance deadlines. Many organisations in your situation are unsure exactly what the AI Act requires — that is precisely what we help with.',
+      '<strong>Your organisation faces significant compliance risk.</strong> Multiple areas require short-term action. Without addressing them, you risk fines, customer claims and reputational damage.',
+      '<strong>Your organisation is in a high-risk situation.</strong> The scan found serious compliance gaps. The EU AI Act is in force — immediate action is necessary to prevent fines up to €35 million and customer claims.'
+    ],
+    steps: [
+      ['Map your AI usage', 'List all AI tools you use — including ChatGPT, Gemini, Copilot and built-in AI in other software.'],
+      ['Assess your risk classification', 'Determine the risk category for each AI application under the EU AI Act.'],
+      ['Set priorities', 'Address high-risk areas first. Assign a responsible person for the compliance approach.'],
+      ['Book a free consultation', 'Have our specialists analyse your situation and create a personalised action plan.']
+    ],
+    cats: { org:'Organisation', ai:'AI Usage', data:'Data & Privacy', risk:'Risk Management', gov:'Governance' },
+    catDescs: {
+      org:'Organisation size & structure',
+      ai:'AI applications & decisions',
+      data:'Data privacy & transparency',
+      risk:'Risk control & oversight',
+      gov:'Policy & accountability'
+    }
+  }
+};
+
+// ─── Questions ────────────────────────────────────────────────────────
+// Smart branching: type determines which questions follow
+const Q = {
+  nl: [
+    {
+      id:'type', cat:'org', weight:0, branch: true,
+      text:'Wat is uw type organisatie?',
+      hint:'Wij stellen de volgende vragen af op uw situatie.',
+      options:[
+        {label:'ZZP\'er / Freelancer', sub:'Ik werk alleen of als eenmanszaak', score:15, type:'zzp'},
+        {label:'Klein bedrijf', sub:'2 tot 20 medewerkers', score:25, type:'mkb_s'},
+        {label:'MKB', sub:'20 tot 250 medewerkers', score:45, type:'mkb_m'},
+        {label:'Enterprise / Grote organisatie', sub:'Meer dan 250 medewerkers', score:60, type:'ent'},
+      ]
+    },
+    {
+      id:'ai_tools', cat:'ai', weight:3,
+      text:'Welke AI-tools gebruikt u voor uw werk?',
+      hint:'',
+      infoBox: {
+        title: '💡 Wat valt hieronder?',
+        body: 'Bijna alle AI-tools vallen hieronder — ook de bekende gratis versies:',
+        items: ['ChatGPT (OpenAI) — ook de gratis versie', 'Google Gemini / Bard', 'Microsoft Copilot / Bing AI', 'Claude (Anthropic)', 'Grammarly of DeepL AI-functies', 'AI-functies ingebouwd in Word, Excel, Outlook', 'AI-chatbots op websites van leveranciers', 'Canva AI, Adobe Firefly of vergelijkbaar']
+      },
+      options:[
+        {label:'Ik gebruik geen AI-tools', sub:'', score:0},
+        {label:'Alleen incidenteel, voor simpele taken', sub:'Bijv. spellingcontrole of vertaling', score:20},
+        {label:'Regelmatig — voor teksten, samenvattingen of advies', sub:'ChatGPT, Gemini, Copilot of vergelijkbaar', score:50},
+        {label:'AI is een kernonderdeel van mijn werk', sub:'Dagelijks, voor meerdere taken of klantwerk', score:80},
+      ]
+    },
+    {
+      id:'data_upload', cat:'data', weight:3,
+      text:'Verwerkt u persoonsgegevens van klanten of anderen via AI?',
+      hint:'',
+      infoBox: {
+        title: '📋 Dit valt ook onder verwerking — wat veel mensen niet weten',
+        body: 'U verwerkt al persoonsgegevens via AI als u:',
+        items: [
+          'Een document met namen of adressen uploadt naar ChatGPT voor een samenvatting',
+          'Een e-mail met klantinformatie laat opstellen of verbeteren door AI',
+          'Een CV of sollicitatiebrief invoert in een AI-tool',
+          'Een factuur of contract met klantgegevens laat analyseren',
+          'Klantvragen met hun naam/data invoert in een chatbot',
+          'Audio-opnames van gesprekken laat transcriberen',
+          'Foto\'s van klanten of medewerkers uploadt naar een AI-tool'
+        ]
+      },
+      options:[
+        {label:'Nee, ik gebruik AI alleen met generieke, anonieme informatie', sub:'', score:5},
+        {label:'Soms, ik heb er niet goed bij stilgestaan', sub:'Mogelijk wel, maar ik weet het niet zeker', score:60},
+        {label:'Ja, maar geanonimiseerde of gefingeerde data', sub:'', score:25},
+        {label:'Ja, met identificeerbare of gevoelige persoonsgegevens', sub:'Namen, adressen, financiële info, gezondheidsdata etc.', score:90},
+      ]
+    },
+    {
+      id:'ai_decisions', cat:'ai', weight:3,
+      text:'Gebruikt u AI om beslissingen te nemen die anderen beïnvloeden?',
+      hint:'Denk aan: offertes aanpassen per klant, klantselectie, beoordelen van sollicitanten, prijsstelling op basis van klantdata.',
+      options:[
+        {label:'Nee, AI is alleen voor mijn eigen taken', sub:'Schrijven, samenvatten, ideeën opdoen', score:10},
+        {label:'Ja, AI adviseert — ik beslis altijd zelf', sub:'', score:35},
+        {label:'Ja, AI bepaalt deels de uitkomst', sub:'Bijv. automatische prijzen of segmentatie', score:70},
+        {label:'AI beslist volledig of bijna volledig', sub:'Zonder handmatige controle', score:92},
+      ]
+    },
+    {
+      id:'customer_facing', cat:'ai', weight:2,
+      text:'Gebruikt u AI direct in contact met uw klanten?',
+      hint:'Bijv. een chatbot op uw website, AI-gegenereerde e-mails namens u, of AI-aanbevelingen die klanten zien.',
+      options:[
+        {label:'Nee, AI is intern en klanten merken er niets van', sub:'', score:10},
+        {label:'Ja, maar ik vertel klanten altijd dat het AI is', sub:'', score:30},
+        {label:'Ja, klanten weten het niet altijd', sub:'', score:75},
+        {label:'Niet van toepassing / Weet ik niet', sub:'', score:40},
+      ]
+    },
+    {
+      id:'risk_assess', cat:'risk', weight:3,
+      text:'Heeft u nagedacht over de risico\'s van uw AI-gebruik?',
+      hint:'',
+      zzpHint: 'Voor ZZP\'ers is dit: heeft u nagedacht over wat er mis kan gaan als u AI-tools zakelijk inzet?',
+      options:[
+        {label:'Ja, ik heb dit bewust beoordeeld', sub:'', score:5},
+        {label:'Een beetje, maar niet systematisch', sub:'', score:45},
+        {label:'Nee, ik heb er niet of nauwelijks bij stilgestaan', sub:'', score:82},
+        {label:'Niet van toepassing', sub:'', score:10},
+      ]
+    },
+    {
+      id:'transparency', cat:'data', weight:2,
+      text:'Weten betrokkenen dat u AI gebruikt dat hen kan beïnvloeden?',
+      hint:'Bijv. als u AI gebruikt om klantaanbiedingen te personaliseren, sollicitanten te screenen of communicatie te genereren.',
+      options:[
+        {label:'Ja, dit is altijd transparant', sub:'', score:5},
+        {label:'Soms, maar niet consequent', sub:'', score:45},
+        {label:'Nee', sub:'', score:80},
+        {label:'Niet van toepassing', sub:'', score:5},
+      ]
+    },
+    {
+      id:'oversight', cat:'risk', weight:2,
+      text:'Kunt u een AI-beslissing altijd zelf corrigeren of terugdraaien?',
+      hint:'De AI Act vereist dat mensen altijd de eindverantwoordelijkheid houden, zeker bij beslissingen over anderen.',
+      options:[
+        {label:'Ja, ik controleer altijd voor ik iets verzend of besluit', sub:'', score:5},
+        {label:'Meestal wel, niet altijd', sub:'', score:35},
+        {label:'Nee, of het gaat geautomatiseerd', sub:'', score:80},
+        {label:'Niet van toepassing', sub:'', score:5},
+      ]
+    },
+    {
+      id:'policy', cat:'gov', weight:1,
+      text:'Heeft u spelregels voor hoe u AI gebruikt in uw werk?',
+      hint:'',
+      zzpHint: 'Als ZZP\'er: heeft u voor uzelf bepaald wat u wel en niet met AI doet voor klanten?',
+      mkbHint: 'Als bedrijf: heeft u een intern AI-beleid dat medewerkers vertelt hoe zij AI mogen gebruiken?',
+      options:[
+        {label:'Ja, bewust vastgelegd', sub:'', score:0},
+        {label:'Globaal, maar niet formeel', sub:'', score:30},
+        {label:'Nee, niet echt nagedacht', sub:'', score:68},
+        {label:'Niet nodig voor mijn situatie', sub:'', score:20},
+      ]
+    },
+    // Enterprise-only questions
+    {
+      id:'ai_officer', cat:'gov', weight:2,
+      enterpriseOnly: true,
+      text:'Is er een verantwoordelijke aangewezen voor AI-compliance?',
+      hint:'Dit kan een AI Officer, DPO, compliance manager of aangewezen directielid zijn.',
+      options:[
+        {label:'Ja, een dedicated persoon of team', sub:'', score:5},
+        {label:'In het proces van aanwijzing', sub:'', score:35},
+        {label:'Nee, dit is niet belegd', sub:'', score:80},
+        {label:'Weet ik niet', sub:'', score:55},
+      ]
+    },
+    {
+      id:'bias', cat:'risk', weight:2,
+      enterpriseOnly: true,
+      text:'Zijn uw AI-systemen getest op discriminerende uitkomsten?',
+      hint:'De AI Act vereist dat hoog-risico systemen aantoonbaar vrij zijn van discriminerende patronen.',
+      options:[
+        {label:'Ja, regelmatig getest en gedocumenteerd', sub:'', score:5},
+        {label:'Eenmalig getest bij implementatie', sub:'', score:35},
+        {label:'Nee, nooit getest', sub:'', score:88},
+        {label:'Niet van toepassing', sub:'', score:5},
+      ]
+    },
+    {
+      id:'sector', cat:'org', weight:1,
+      text:'In welke sector werkt u voornamelijk?',
+      hint:'Bepaalde sectoren vallen onder strengere regels vanwege hogere risico\'s.',
+      options:[
+        {label:'Zorg, medisch of farmaceutisch', sub:'Hoog-risico sector', score:80},
+        {label:'Financiën, krediet of verzekering', sub:'Hoog-risico sector', score:75},
+        {label:'HR, werving & selectie of personeelsbeheer', sub:'Hoog-risico sector', score:70},
+        {label:'Overig — retail, technologie, dienstverlening, etc.', sub:'', score:20},
+      ]
+    },
+  ],
+  en: [
+    {
+      id:'type', cat:'org', weight:0, branch:true,
+      text:'What type of organisation are you?',
+      hint:'We will tailor the following questions to your situation.',
+      options:[
+        {label:'Freelancer / Sole trader', sub:'I work alone or as an independent', score:15, type:'zzp'},
+        {label:'Small business', sub:'2 to 20 employees', score:25, type:'mkb_s'},
+        {label:'SME', sub:'20 to 250 employees', score:45, type:'mkb_m'},
+        {label:'Enterprise / Large organisation', sub:'More than 250 employees', score:60, type:'ent'},
+      ]
+    },
+    {
+      id:'ai_tools', cat:'ai', weight:3,
+      text:'Which AI tools do you use for work?',
+      hint:'',
+      infoBox:{
+        title:'💡 What counts as an AI tool?',
+        body:'Almost all AI tools are included — including popular free versions:',
+        items:['ChatGPT (OpenAI) — including the free version','Google Gemini / Bard','Microsoft Copilot / Bing AI','Claude (Anthropic)','Grammarly or DeepL AI features','AI features built into Word, Excel, Outlook','AI chatbots on supplier websites','Canva AI, Adobe Firefly or similar']
+      },
+      options:[
+        {label:'I do not use AI tools', sub:'', score:0},
+        {label:'Occasionally, for simple tasks', sub:'e.g. spell-check or translation', score:20},
+        {label:'Regularly — for texts, summaries or advice', sub:'ChatGPT, Gemini, Copilot or similar', score:50},
+        {label:'AI is a core part of my work', sub:'Daily, for multiple tasks or client work', score:80},
+      ]
+    },
+    {
+      id:'data_upload', cat:'data', weight:3,
+      text:'Do you process personal data of clients or others via AI?',
+      hint:'',
+      infoBox:{
+        title:'📋 This also counts as processing — what many people do not realise',
+        body:'You are already processing personal data via AI if you:',
+        items:[
+          'Upload a document with names or addresses to ChatGPT for a summary',
+          'Have AI draft or improve an email containing client information',
+          'Enter a CV or cover letter into an AI tool',
+          'Have AI analyse a contract or invoice with client details',
+          'Enter customer queries with their name/data into a chatbot',
+          'Have AI transcribe audio recordings of conversations',
+          'Upload photos of clients or employees to an AI tool'
+        ]
+      },
+      options:[
+        {label:'No, I only use AI with generic, anonymous information', sub:'', score:5},
+        {label:'Sometimes — I have not thought about it carefully', sub:'Possibly yes, but I am not certain', score:60},
+        {label:'Yes, but anonymised or fictitious data', sub:'', score:25},
+        {label:'Yes, with identifiable or sensitive personal data', sub:'Names, addresses, financial info, health data etc.', score:90},
+      ]
+    },
+    {
+      id:'ai_decisions', cat:'ai', weight:3,
+      text:'Do you use AI to make decisions that affect others?',
+      hint:'e.g. adjusting quotes per client, client selection, screening candidates, pricing based on client data.',
+      options:[
+        {label:'No, AI is only for my own tasks', sub:'Writing, summarising, brainstorming', score:10},
+        {label:'Yes, AI advises — I always decide myself', sub:'', score:35},
+        {label:'Yes, AI partly determines the outcome', sub:'e.g. automatic prices or segmentation', score:70},
+        {label:'AI decides fully or almost fully', sub:'Without manual review', score:92},
+      ]
+    },
+    {
+      id:'customer_facing', cat:'ai', weight:2,
+      text:'Do you use AI in direct contact with your clients?',
+      hint:'e.g. a chatbot on your website, AI-generated emails on your behalf, or AI recommendations visible to clients.',
+      options:[
+        {label:'No, AI is internal and clients do not notice it', sub:'', score:10},
+        {label:'Yes, and I always tell clients it is AI', sub:'', score:30},
+        {label:'Yes, clients do not always know', sub:'', score:75},
+        {label:'Not applicable / Not sure', sub:'', score:40},
+      ]
+    },
+    {
+      id:'risk_assess', cat:'risk', weight:3,
+      text:'Have you considered the risks of your AI usage?',
+      hint:'',
+      zzpHint:'For freelancers: have you thought about what could go wrong when using AI tools commercially?',
+      options:[
+        {label:'Yes, I have consciously assessed this', sub:'', score:5},
+        {label:'Somewhat, but not systematically', sub:'', score:45},
+        {label:'No, I have not really thought about it', sub:'', score:82},
+        {label:'Not applicable', sub:'', score:10},
+      ]
+    },
+    {
+      id:'transparency', cat:'data', weight:2,
+      text:'Do those affected know you use AI that may influence them?',
+      hint:'e.g. if you use AI to personalise client offers, screen candidates or generate communications.',
+      options:[
+        {label:'Yes, this is always transparent', sub:'', score:5},
+        {label:'Sometimes, but not consistently', sub:'', score:45},
+        {label:'No', sub:'', score:80},
+        {label:'Not applicable', sub:'', score:5},
+      ]
+    },
+    {
+      id:'oversight', cat:'risk', weight:2,
+      text:'Can you always correct or reverse an AI decision yourself?',
+      hint:'The AI Act requires that humans always retain final responsibility, especially for decisions affecting others.',
+      options:[
+        {label:'Yes, I always review before sending or deciding', sub:'', score:5},
+        {label:'Usually, but not always', sub:'', score:35},
+        {label:'No, or it happens automatically', sub:'', score:80},
+        {label:'Not applicable', sub:'', score:5},
+      ]
+    },
+    {
+      id:'policy', cat:'gov', weight:1,
+      text:'Do you have rules for how you use AI in your work?',
+      hint:'',
+      zzpHint:'As a freelancer: have you decided for yourself what you will and will not do with AI for clients?',
+      mkbHint:'As a business: do you have an internal AI policy telling employees how they may use AI?',
+      options:[
+        {label:'Yes, consciously documented', sub:'', score:0},
+        {label:'Broadly yes, but not formally', sub:'', score:30},
+        {label:'No, not really thought about it', sub:'', score:68},
+        {label:'Not required for my situation', sub:'', score:20},
+      ]
+    },
+    {
+      id:'ai_officer', cat:'gov', weight:2,
+      enterpriseOnly:true,
+      text:'Has a responsible person been appointed for AI compliance?',
+      hint:'This could be an AI Officer, DPO, compliance manager or designated board member.',
+      options:[
+        {label:'Yes, a dedicated person or team', sub:'', score:5},
+        {label:'In the process of being appointed', sub:'', score:35},
+        {label:'No, this has not been assigned', sub:'', score:80},
+        {label:"Don't know", sub:'', score:55},
+      ]
+    },
+    {
+      id:'bias', cat:'risk', weight:2,
+      enterpriseOnly:true,
+      text:'Have your AI systems been tested for discriminatory outcomes?',
+      hint:'The AI Act requires that high-risk systems demonstrably free from discriminatory patterns.',
+      options:[
+        {label:'Yes, regularly tested and documented', sub:'', score:5},
+        {label:'Tested once at implementation', sub:'', score:35},
+        {label:'No, never tested', sub:'', score:88},
+        {label:'Not applicable', sub:'', score:5},
+      ]
+    },
+    {
+      id:'sector', cat:'org', weight:1,
+      text:'What sector do you primarily work in?',
+      hint:'Certain sectors face stricter rules due to higher risks.',
+      options:[
+        {label:'Healthcare, medical or pharmaceutical', sub:'High-risk sector', score:80},
+        {label:'Finance, credit or insurance', sub:'High-risk sector', score:75},
+        {label:'HR, recruitment or personnel management', sub:'High-risk sector', score:70},
+        {label:'Other — retail, technology, services etc.', sub:'', score:20},
+      ]
+    },
+  ]
+};
+
+// ─── Quiz State ────────────────────────────────────────────────────
+let quizActive = false;
+let qIdx = 0;
+let answers = {};
+let orgType = null; // 'zzp','mkb_s','mkb_m','ent'
+
+function getQuestions() {
+  const all = Q[activeLang];
+  if (!orgType || orgType === 'ent') return all;
+  // Non-enterprise: skip enterpriseOnly questions
+  return all.filter(q => !q.enterpriseOnly);
+}
+
+function startQuiz() {
+  quizActive = true;
+  answers = {};
+  qIdx = 0;
+  orgType = null;
+  el('quiz-start-panel').style.display = 'none';
+  el('quiz-body').style.display = 'block';
+  renderQ();
+}
+
+function renderQ() {
+  const qs = getQuestions();
+  const q = qs[qIdx];
+  const t = TX[activeLang];
+  const total = qs.length;
+
+  // Progress
+  el('q-progress').style.width = `${(qIdx/total)*100}%`;
+  el('q-step-label').textContent = t.stepLabel;
+  el('q-step-count').textContent = `${qIdx+1} / ${total}`;
+  el('q-back-lbl').textContent = t.back;
+  el('q-next-lbl').textContent = qIdx === total-1 ? t.finish : t.next;
+
+  // Hint text — adapt for org type
+  let hint = q.hint || '';
+  if (orgType === 'zzp' && q.zzpHint) hint = q.zzpHint;
+  if ((orgType === 'mkb_s' || orgType === 'mkb_m') && q.mkbHint) hint = q.mkbHint;
+
+  // Question area
+  el('q-area').innerHTML = `
+    <div class="quiz-cat-label">${t.cats[q.cat] || q.cat}</div>
+    <div class="quiz-q-text">${q.text}</div>
+    ${hint ? `<div class="quiz-q-hint">${hint}</div>` : ''}
+    ${q.infoBox ? `
+      <div class="quiz-info-box">
+        <strong>${q.infoBox.title}</strong>
+        ${q.infoBox.body}
+        <ul>${q.infoBox.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>` : ''}
+  `;
+
+  // Options
+  el('q-opts').innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt' + (answers[q.id]===i ? ' selected' : '');
+    btn.onclick = () => selectOpt(i);
+    btn.innerHTML = `
+      <span class="quiz-opt-radio"></span>
+      <span class="quiz-opt-body">
+        <div class="quiz-opt-label">${opt.label}</div>
+        ${opt.sub ? `<div class="quiz-opt-sub">${opt.sub}</div>` : ''}
+      </span>`;
+    el('q-opts').appendChild(btn);
+  });
+
+  el('q-back').style.visibility = qIdx === 0 ? 'hidden' : 'visible';
+  el('q-next').disabled = answers[q.id] === undefined;
+}
+
+function selectOpt(i) {
+  const q = getQuestions()[qIdx];
+  answers[q.id] = i;
+
+  // If org type question, record type
+  if (q.branch) {
+    orgType = q.options[i].type || null;
+  }
+
+  document.querySelectorAll('.quiz-opt').forEach((el,idx) => el.classList.toggle('selected', idx===i));
+  document.getElementById('q-next').disabled = false;
+}
+
+function qNext() {
+  const qs = getQuestions();
+  if (qIdx < qs.length-1) { qIdx++; renderQ(); }
+  else showResults();
+}
+function qBack() {
+  if (qIdx > 0) { qIdx--; renderQ(); }
+}
+
+// ─── Score & Results ──────────────────────────────────────────────
+function calcScore() {
+  const qs = getQuestions();
+  let tw=0, ws=0;
+  qs.forEach(q => {
+    if (!q.weight) return;
+    if (answers[q.id] !== undefined) {
+      ws += q.options[answers[q.id]].score * q.weight;
+      tw += 100 * q.weight;
+    }
+  });
+  return tw > 0 ? Math.round((ws/tw)*100) : 50;
+}
+
+function calcBreakdown() {
+  const qs = getQuestions();
+  const cats = {};
+  qs.forEach(q => {
+    if (!q.weight) return;
+    if (!cats[q.cat]) cats[q.cat] = {t:0, w:0};
+    if (answers[q.id] !== undefined) {
+      cats[q.cat].t += q.options[answers[q.id]].score * q.weight;
+      cats[q.cat].w += 100 * q.weight;
+    }
+  });
+  return Object.entries(cats).map(([cat,d]) => ({cat, score: d.w>0 ? Math.round((d.t/d.w)*100) : 0})).sort((a,b)=>b.score-a.score);
+}
+
+function showResults() {
+  el('quiz-card').style.display = 'none';
+  el('quiz-results').style.display = 'block';
+
+  const score = calcScore();
+  const t = TX[activeLang];
+  const tier = score < 40 ? 0 : score < 65 ? 1 : 2;
+
+  // Animate score
+  let cur = 0;
+  const timer = setInterval(() => {
+    cur = Math.min(cur + Math.ceil(score/40), score);
+    el('r-score-num').textContent = cur;
+    if (cur >= score) clearInterval(timer);
+  }, 25);
+
+  // Gauge
+  setTimeout(() => {
+    const arc = el('gauge-arc');
+    const offset = 226 - (score/100)*226;
+    arc.style.strokeDashoffset = offset;
+    arc.style.stroke = score < 40 ? '#d97706' : '#dc2626';
+  }, 150);
+
+  el('r-score-num').style.color = score < 40 ? '#d97706' : '#dc2626';
+  el('r-score-lbl').textContent = t.scoreLabel;
+
+  const vBadge = el('r-verdict');
+  vBadge.className = `results-verdict ${t.verdictClass[tier]}`;
+  vBadge.textContent = t.verdict[tier];
+
+  el('r-alert').innerHTML = t.alerts[tier];
+
+  // Breakdown
+  el('r-breakdown-title').textContent = t.breakdownTitle;
+  const icons = {org:'🏢',ai:'🤖',data:'🔒',risk:'⚠️',gov:'📋'};
+  const bd = el('r-breakdown');
+  bd.innerHTML = '';
+  calcBreakdown().forEach(({cat,score:cs}) => {
+    const cls = cs>=60?'br-r':cs>=35?'br-a':'br-g';
+    bd.innerHTML += `
+      <div class="br-row">
+        <div class="br-icon">${icons[cat]||'📊'}</div>
+        <div class="br-info"><div class="br-name">${t.cats[cat]||cat}</div><div class="br-desc">${t.catDescs[cat]||''}</div></div>
+        <div class="br-score ${cls}">${cs}</div>
+      </div>`;
+  });
+
+  // Steps
+  el('r-steps-title').textContent = t.stepsTitle;
+  const sl = el('r-steps');
+  sl.innerHTML = '';
+  t.steps.forEach(([title,desc],i) => {
+    sl.innerHTML += `<div class="step-row"><div class="step-n">0${i+1}</div><div class="step-content"><h4>${title}</h4><p>${desc}</p></div></div>`;
+  });
+
+  el('r-cta-title').textContent = t.ctaTitle;
+  el('r-cta-p').textContent = t.ctaP;
+  el('r-cta-btn').textContent = t.ctaBtn;
+  el('r-restart').textContent = t.restart;
+
+  // Scroll to results
+  setTimeout(() => {
+    el('results-score-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
+}
+
+function restartQuiz() {
+  answers = {}; qIdx = 0; orgType = null; quizActive = false;
+  el('quiz-results').style.display = 'none';
+  el('quiz-card').style.display = 'block';
+  el('quiz-start-panel').style.display = 'block';
+  el('quiz-body').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+// ─── Init ──────────────────────────────────────────────────────────
+setLang(activeLang);
+</script>
+</body>
+</html>
