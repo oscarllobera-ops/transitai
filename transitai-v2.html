@@ -1652,6 +1652,41 @@ footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); p
   </div>
 </div>
 
+<!-- ════════════════════ ADMIN TICKETS -->
+<div id="page-admin" class="page" style="display:none;">
+  <div class="container" style="padding: 40px 0;">
+    <h1>Admin Dashboard — Tickets</h1>
+    <p style="color: var(--muted); margin-bottom: 24px;">Alle inkomende formulieren en quizresultaten</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+      <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #1a56db;">
+        <div style="font-size: 24px; font-weight: bold; color: #1a56db;">-</div>
+        <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Totaal tickets</div>
+      </div>
+      <div style="background: #ecfdf5; padding: 16px; border-radius: 8px; border-left: 4px solid #059669;">
+        <div style="font-size: 24px; font-weight: bold; color: #059669;">-</div>
+        <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Contact forms</div>
+      </div>
+      <div style="background: #fffbeb; padding: 16px; border-radius: 8px; border-left: 4px solid #d97706;">
+        <div style="font-size: 24px; font-weight: bold; color: #d97706;">-</div>
+        <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Offertes</div>
+      </div>
+    </div>
+    
+    <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+      <div style="padding: 16px; border-bottom: 1px solid var(--border); background: var(--bg);">
+        <input type="text" placeholder="🔍 Zoeken naar ticket ID of email..." id="admin-search" 
+          style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px;">
+      </div>
+      <div id="admin-tickets-list" style="max-height: 600px; overflow-y: auto;">
+        <div style="padding: 32px; text-align: center; color: var(--muted);">
+          Laden...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════════ VOORWAARDEN -->
 <div id="page-voorwaarden" class="page">
   <div class="legal-page">
@@ -1687,7 +1722,61 @@ function goPage(id) {
   const p = document.getElementById('page-' + id);
   if (p) { p.classList.add('active'); window.scrollTo(0,0); }
   document.getElementById('mobile-nav').style.display = 'none';
+  
+  // Load admin data when navigating to admin
+  if (id === 'admin') {
+    loadAdminTickets();
+  }
 }
+
+async function loadAdminTickets() {
+  try {
+    const res = await fetch('/api/admin/tickets');
+    const data = await res.json();
+    
+    // Update stats
+    document.querySelector('[style*="var(--muted)"]')?.parentElement?.querySelectorAll('[style*="font-size: 24px"]')[0].textContent = data.total || 0;
+    
+    // Render tickets
+    const ticketsList = document.getElementById('admin-tickets-list');
+    if (!data.tickets || data.tickets.length === 0) {
+      ticketsList.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--muted);">Geen tickets gevonden</div>';
+      return;
+    }
+    
+    const typeEmojis = { contact: '💬', offerte: '📋', quiz_result: '📊' };
+    const typeLabels = { contact: 'Contact', offerte: 'Offerte', quiz_result: 'Quiz' };
+    
+    ticketsList.innerHTML = data.tickets.map(t => `
+      <div style="padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="showTicketDetail('${t.ticketId}')">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+          <div>
+            <strong>${typeEmojis[t.type] || '📌'} ${typeLabels[t.type] || t.type}</strong>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">ID: <code>${t.ticketId}</code></div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 12px; color: var(--muted);">${new Date(t.timestamp).toLocaleDateString('nl-NL')}</div>
+            <div style="font-size: 11px; color: var(--muted);">${new Date(t.timestamp).toLocaleTimeString('nl-NL')}</div>
+          </div>
+        </div>
+        <div style="font-size: 14px; color: var(--ink2);">
+          ${t.name ? `<strong>${t.name}</strong>` : ''}
+          ${t.email ? `<div>${t.email}</div>` : ''}
+          ${t.bedrijfsnaam ? `<div><small>${t.bedrijfsnaam}</small></div>` : ''}
+          ${t.score !== undefined ? `<div><small>Score: <strong>${t.score}%</strong></small></div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading tickets:', err);
+    document.getElementById('admin-tickets-list').innerHTML = '<div style="padding: 32px; color: #dc2626;">Error loading tickets</div>';
+  }
+}
+
+function showTicketDetail(ticketId) {
+  alert('Ticket details: ' + ticketId + '\n\n(Volledige detail-view kan worden toegevoegd)');
+}
+
 function toggleMobile() {
   const m = document.getElementById('mobile-nav');
   m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
