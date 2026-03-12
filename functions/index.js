@@ -17,4 +17,4 @@ app.post('/api/predict', (req, res) => {
   res.json({ original: input, transformed, length: input.length, ts: new Date().toISOString() });
 });
 
-exports.api = functions.https.onRequest(app);
+exports.api = functions.runWith({ serviceAccountEmail: 'transitai-f9eaf@appspot.gserviceaccount.com' }).https.onRequest(app);
