@@ -1,0 +1,20 @@
+steps:
+  # Build the frontend
+  - name: 'node:18'
+    entrypoint: npm
+    args: ['ci']
+    dir: '/workspace'
+    
+  - name: 'node:18'
+    entrypoint: npm
+    args: ['run', 'build']
+    dir: '/workspace'
+    
+  # Install and verify functions
+  - name: 'node:18'
+    entrypoint: npm
+    args: ['ci']
+    dir: '/workspace/functions'
+
+timeout: '1800s'
+machineType: 'N1_HIGHCPU_8'

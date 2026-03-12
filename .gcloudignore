@@ -1,0 +1,16 @@
+# This file specifies files that are not uploaded to Cloud Build
+
+node_modules/
+npm-debug.log
+.git
+.gitignore
+README.md
+LICENSE
+.env
+.firebase/
+functions/node_modules/
+dist/
+public/
+src/
+.firebaserc
+vite.config.js

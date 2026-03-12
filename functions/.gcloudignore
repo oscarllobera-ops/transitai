@@ -1,0 +1,21 @@
+# Cloud Functions build configuration
+
+# Node modules will be installed during build
+node_modules/
+npm-debug.log
+
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+LICENSE
+
+# Environment files
+.env
+.env.local
+
+# Cache
+.cache
+.vscode
