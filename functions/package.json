@@ -3,7 +3,7 @@
   "description": "Cloud Functions for TransitAI",
   "private": true,
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "scripts": {
     "start": "firebase emulators:start --only functions",
