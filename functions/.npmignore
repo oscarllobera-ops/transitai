@@ -1,0 +1,7 @@
+.git
+.gitignore
+.firebase
+.gcloudignore
+.npmrc
+firebase-debug.log
+node_modules
