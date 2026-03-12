@@ -1,8 +1,9 @@
 # Cloud Functions build configuration
 
-# Node modules will be installed during build
+# Node modules will be reinstalled by Cloud Build
 node_modules/
 npm-debug.log
+package-lock.json
 
 # Git files
 .git
@@ -16,6 +17,9 @@ LICENSE
 .env
 .env.local
 
-# Cache
+# Cache and logs
 .cache
 .vscode
+firebase-debug.log
+.npmignore
+
