@@ -1545,7 +1545,11 @@ footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); p
           <input type="hidden" name="timestamp" id="offerte-timestamp">
           <button type="submit" class="form-submit">Offerte aanvragen →</button>
           <div class="form-disclaimer">Door dit formulier te verzenden gaat u akkoord met ons <a onclick="goPage('privacy')">privacybeleid</a>. Wij nemen binnen één werkdag contact met u op.</div>
-          <div class="form-success-msg" id="offerte-success">✅ Bedankt voor uw aanvraag! Wij nemen binnen één werkdag contact met u op voor uw offerte op maat.</div>
+          <div class="form-success-msg" id="offerte-success">
+            ✅ Bedankt voor uw aanvraag! Wij nemen binnen één werkdag contact met u op voor uw offerte op maat.<br><br>
+            <strong>Uw ticket nummer:</strong> <code id="offerte-ticket">-</code><br>
+            <small>U ontvangt een bevestigingsmail met deze referentie.</small>
+          </div>
         </form>
       </div>
     </div>
@@ -1614,7 +1618,11 @@ footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); p
         <input type="hidden" name="form_type" value="contact">
         <button type="submit" class="form-submit">Verstuur bericht →</button>
         <div class="form-disclaimer">Door dit formulier in te sturen gaat u akkoord met ons <a onclick="goPage('privacy')">privacybeleid</a>.</div>
-        <div class="form-success-msg" id="contact-success">✅ Bedankt voor uw bericht! Wij nemen zo snel mogelijk contact met u op.</div>
+        <div class="form-success-msg" id="contact-success">
+          ✅ Bedankt voor uw bericht! Wij nemen zo snel mogelijk contact met u op.<br><br>
+          <strong>Uw ticket nummer:</strong> <code id="contact-ticket">-</code><br>
+          <small>U ontvangt een bevestigingsmail met deze referentie.</small>
+        </div>
       </form>
     </div>
   </div>
@@ -1692,23 +1700,85 @@ function toggleFaq(btn) {
 }
 
 // ─── Forms ──────────────────────────────────────────────────────────
-function submitContact(e) {
+async function submitContact(e) {
   e.preventDefault();
-  // TODO: connect to nodemailer endpoint
-  // const data = new FormData(e.target);
-  document.getElementById('contact-success').style.display = 'block';
-  e.target.querySelector('.form-submit').textContent = 'Verzonden ✓';
-  e.target.querySelector('.form-submit').disabled = true;
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
+  
+  try {
+    btn.textContent = 'Verzenden...';
+    btn.disabled = true;
+    
+    const formData = Object.fromEntries(new FormData(form));
+    // Combine firstname and lastname into name
+    const name = `${formData.firstname || ''} ${formData.lastname || ''}`.trim();
+    
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: formData.email,
+        phone: formData.phone || '',
+        message: formData.message
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (!res.ok) throw new Error(data.error || 'Error submitting form');
+    
+    // Show success with ticket
+    document.getElementById('contact-success').style.display = 'block';
+    document.getElementById('contact-ticket').textContent = data.ticketId;
+    btn.textContent = 'Verzonden ✓';
+    form.reset();
+  } catch (err) {
+    alert('Error: ' + err.message);
+    btn.textContent = 'Probeer opnieuw';
+    btn.disabled = false;
+  }
 }
-function submitOfferte(e) {
+
+async function submitOfferte(e) {
   e.preventDefault();
-  document.getElementById('offerte-timestamp').value = new Date().toISOString();
-  // TODO: POST to /api/offerte with nodemailer
-  // const formData = Object.fromEntries(new FormData(e.target));
-  // fetch('/api/offerte', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) })
-  document.getElementById('offerte-success').style.display = 'block';
-  e.target.querySelector('.form-submit').textContent = 'Aanvraag verzonden ✓';
-  e.target.querySelector('.form-submit').disabled = true;
+  const form = e.target;
+  const btn = form.querySelector('.form-submit');
+  
+  try {
+    btn.textContent = 'Verzenden...';
+    btn.disabled = true;
+    
+    const formData = Object.fromEntries(new FormData(form));
+    // Combine firstname and lastname into name
+    const naam = `${formData.firstname || ''} ${formData.lastname || ''}`.trim();
+    
+    const res = await fetch('/api/offerte', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        bedrijfsnaam: formData.bedrijfsnaam,
+        naam: naam,
+        email: formData.email,
+        medewerkers: formData.medewerkers || '',
+        beschrijving: formData.description || ''
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (!res.ok) throw new Error(data.error || 'Error submitting offerte');
+    
+    // Show success with ticket
+    document.getElementById('offerte-success').style.display = 'block';
+    document.getElementById('offerte-ticket').textContent = data.ticketId;
+    btn.textContent = 'Aanvraag verzonden ✓';
+    form.reset();
+  } catch (err) {
+    alert('Error: ' + err.message);
+    btn.textContent = 'Probeer opnieuw';
+    btn.disabled = false;
+  }
 }
 
 // ─── Language ────────────────────────────────────────────────────────
@@ -2316,7 +2386,44 @@ function showResults() {
   // Scroll to results
   setTimeout(() => {
     el('results-score-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Prompt for email to save results
+    setTimeout(() => {
+      const userEmail = prompt('Wilt u uw resultaten per email ontvangen?\n\nVoer uw email in (of druk Cancel):');
+      if (userEmail && userEmail.includes('@')) {
+        submitQuizResults(userEmail, score);
+      }
+    }, 1000);
   }, 200);
+}
+
+async function submitQuizResults(email, score) {
+  try {
+    const breakdown = calcBreakdown();
+    const res = await fetch('/api/quiz-results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: email.split('@')[0],
+        email: email,
+        score: score,
+        breakdown: breakdown,
+        orgType: orgType
+      })
+    });
+    
+    const data = await res.json();
+    if (res.ok) {
+      console.log('Quiz results saved. Ticket:', data.ticketId);
+      // Show ticket info
+      const ticketInfo = document.createElement('div');
+      ticketInfo.style.cssText = 'background: #e0f2fe; padding: 12px; border-radius: 8px; margin-top: 16px; border-left: 4px solid #0284c7;';
+      ticketInfo.innerHTML = `<strong>✓ Uw resultaten zijn verzonden!</strong><br><small>Ticket: ${data.ticketId}</small>`;
+      el('results-score-card').appendChild(ticketInfo);
+    }
+  } catch (err) {
+    console.error('Error submitting quiz results:', err);
+  }
 }
 
 function restartQuiz() {
